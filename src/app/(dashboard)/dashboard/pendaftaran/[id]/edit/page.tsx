@@ -5,18 +5,15 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 import type { Pencipta } from "@/lib/types";
 
-// ✅ PERBAIKAN UTAMA: Kita akan mengetik props secara langsung di fungsi
-//    untuk menghindari konflik dengan tipe generik 'PageProps' dari Next.js.
+// ✅ PERBAIKAN: Definisi props yang benar untuk Next.js 15
+interface EditPendaftaranPageProps {
+  params: Promise<{ id: string }>;
+}
 
 export default async function EditPendaftaranPage({
   params,
-}: {
-  // Ini adalah cara yang benar untuk mendefinisikan props di Next.js 15
-  // di mana 'params' itu sendiri yang merupakan Promise, namun Next.js
-  // secara internal menangani ini. Kita tetap bisa definisikan bentuk datanya.
-  params: { id: string };
-}) {
-  // Logika 'await' Anda sudah benar.
+}: EditPendaftaranPageProps) {
+  // Await params untuk mendapatkan nilai id
   const { id } = await params;
 
   const { data: pendaftaran, error } = await getRegistrationById(id);
