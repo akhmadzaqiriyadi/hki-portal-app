@@ -32,7 +32,6 @@ const getStatusVariant = (status: StatusPendaftaran) => {
   }
 };
 
-
 // Helper untuk menampilkan item detail agar rapi
 function DetailItem({
   label,
@@ -110,13 +109,15 @@ function FilePreviewLink({
   );
 }
 
+// ✅ PERBAIKAN: Definisi props yang benar untuk Next.js 15
+interface DetailPendaftaranPageProps {
+  params: Promise<{ id: string }>;
+}
+
 export default async function DetailPendaftaranPage({
   params,
-}: {
-  // Tipe props tidak perlu diubah, Next.js menangani ini secara internal
-  params: { id: string };
-}) {
-  // ✅ PERBAIKAN UTAMA: 'await' params sebelum mengambil propertinya
+}: DetailPendaftaranPageProps) {
+  // Await params untuk mendapatkan nilai id
   const { id } = await params;
 
   // Gunakan 'id' yang sudah di-await untuk mengambil data
