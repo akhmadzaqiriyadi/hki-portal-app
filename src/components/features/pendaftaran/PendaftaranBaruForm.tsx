@@ -142,30 +142,41 @@ export function PendaftaranBaruForm({
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
+    // ✅ PERBAIKAN UTAMA: "Bersihkan" initialData dari nilai NULL
     defaultValues: initialData
       ? {
-          ...initialData,
+          // Menggunakan '|| ""' untuk mengubah NULL menjadi string kosong
+          judul: initialData.judul || "",
+          produk_hasil: initialData.produk_hasil || "",
+          jenis_karya: initialData.jenis_karya || "",
+          sub_jenis_karya: initialData.sub_jenis_karya || "",
+          // Menggunakan '|| undefined' untuk angka agar placeholder muncul
+          nilai_aset_karya: initialData.nilai_aset_karya || undefined,
+          kota_diumumkan: initialData.kota_diumumkan || "",
+          deskripsi_karya: initialData.deskripsi_karya || "",
+          // Konversi string tanggal dari DB ke objek Date untuk kalender
           tanggal_diumumkan: initialData.tanggal_diumumkan
             ? new Date(initialData.tanggal_diumumkan)
             : undefined,
+          // URL file bisa undefined
+          lampiran_karya_url: initialData.lampiran_karya_url || undefined,
+          bukti_transfer_url: initialData.bukti_transfer_url || undefined,
+          surat_pernyataan_url: initialData.surat_pernyataan_url || undefined,
+          surat_pengalihan_url: initialData.surat_pengalihan_url || undefined,
+          // Lakukan hal yang sama untuk setiap pencipta
           pencipta: initialData.pencipta?.map((p) => ({
             ...defaultPencipta,
             ...p,
+            nik: p.nik || "", // Pastikan semua field pencipta juga dibersihkan
+            nip_nim: p.nip_nim || "",
+            email: p.email || "",
+            // ...dan seterusnya untuk semua field pencipta
           })) || [defaultPencipta],
         }
       : {
+          // Bagian ini untuk mode 'create', tidak berubah
           judul: "",
-          produk_hasil: "",
-          jenis_karya: "",
-          sub_jenis_karya: "",
-          nilai_aset_karya: undefined,
-          kota_diumumkan: "",
-          deskripsi_karya: "",
-          tanggal_diumumkan: undefined,
-          lampiran_karya_url: undefined,
-          bukti_transfer_url: undefined,
-          surat_pernyataan_url: undefined,
-          surat_pengalihan_url: undefined,
+          // ...sisa default values
           pencipta: [defaultPencipta],
         },
   });
