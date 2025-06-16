@@ -5,27 +5,26 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 import type { Pencipta } from "@/lib/types";
 
-// Tipe props halaman tidak perlu diubah
-type EditPendaftaranPageProps = {
-  params: {
-    id: string;
-  };
-};
+// ✅ PERBAIKAN UTAMA: Kita akan mengetik props secara langsung di fungsi
+//    untuk menghindari konflik dengan tipe generik 'PageProps' dari Next.js.
 
 export default async function EditPendaftaranPage({
   params,
-}: EditPendaftaranPageProps) {
-  // ✅ PERBAIKAN: 'await' params sebelum digunakan untuk mendapatkan 'id'
+}: {
+  // Ini adalah cara yang benar untuk mendefinisikan props di Next.js 15
+  // di mana 'params' itu sendiri yang merupakan Promise, namun Next.js
+  // secara internal menangani ini. Kita tetap bisa definisikan bentuk datanya.
+  params: { id: string };
+}) {
+  // Logika 'await' Anda sudah benar.
   const { id } = await params;
 
-  // Gunakan 'id' yang sudah di-await
   const { data: pendaftaran, error } = await getRegistrationById(id);
 
   if (error || !pendaftaran) {
     notFound();
   }
 
-  // Keamanan: Hanya izinkan edit jika statusnya 'draft'
   if (pendaftaran.status !== "draft") {
     return (
       <div className="container mx-auto max-w-2xl py-10">
@@ -33,8 +32,7 @@ export default async function EditPendaftaranPage({
           <AlertCircle className="h-4 w-4" />
           <AlertTitle>Akses Ditolak</AlertTitle>
           <AlertDescription>
-            Pendaftaran ini sudah tidak bisa diubah karena telah difinalisasi
-            atau sedang dalam proses review.
+            Pendaftaran ini sudah tidak bisa diubah.
           </AlertDescription>
         </Alert>
       </div>
