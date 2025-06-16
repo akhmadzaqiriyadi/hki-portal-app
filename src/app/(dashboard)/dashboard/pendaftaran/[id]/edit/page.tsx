@@ -3,9 +3,9 @@ import { notFound } from "next/navigation";
 import { PendaftaranBaruForm } from "@/components/features/pendaftaran/PendaftaranBaruForm";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
-// ✅ Impor tipe 'Pencipta'
 import type { Pencipta } from "@/lib/types";
 
+// Tipe props halaman tidak perlu diubah
 type EditPendaftaranPageProps = {
   params: {
     id: string;
@@ -15,13 +15,13 @@ type EditPendaftaranPageProps = {
 export default async function EditPendaftaranPage({
   params,
 }: EditPendaftaranPageProps) {
+  // ✅ PERBAIKAN: 'await' params sebelum digunakan untuk mendapatkan 'id'
   const { id } = await params;
 
-  // Gunakan action yang benar untuk mengambil data milik pengguna sendiri
+  // Gunakan 'id' yang sudah di-await
   const { data: pendaftaran, error } = await getRegistrationById(id);
 
   if (error || !pendaftaran) {
-    // Jika data tidak ditemukan (bisa karena bukan pemilik), tampilkan 404
     notFound();
   }
 
@@ -41,7 +41,7 @@ export default async function EditPendaftaranPage({
     );
   }
 
-  // Transformasi data untuk mencegah error 'uncontrolled input' dan 'implicit any'
+  // Transformasi data untuk mencegah error 'uncontrolled input'
   const formInitialData = {
     judul: pendaftaran.judul || "",
     produk_hasil: pendaftaran.produk_hasil || "",
@@ -57,25 +57,24 @@ export default async function EditPendaftaranPage({
     bukti_transfer_url: pendaftaran.bukti_transfer_url || undefined,
     surat_pernyataan_url: pendaftaran.surat_pernyataan_url || undefined,
     surat_pengalihan_url: pendaftaran.surat_pengalihan_url || undefined,
-    // ✅ PERBAIKAN: Berikan tipe eksplisit pada parameter 'p'
     pencipta: pendaftaran.pencipta.map((p: Pencipta) => ({
-        nama_lengkap: p.nama_lengkap || "",
-        nik: p.nik || "",
-        nip_nim: p.nip_nim || "",
-        email: p.email || "",
-        jenis_kelamin: p.jenis_kelamin || "",
-        no_hp: p.no_hp || "",
-        fakultas: p.fakultas || "",
-        program_studi: p.program_studi || "",
-        kewarganegaraan: p.kewarganegaraan || "Indonesia",
-        negara: p.negara || "Indonesia",
-        provinsi: p.provinsi || "",
-        kota: p.kota || "",
-        kecamatan: p.kecamatan || "",
-        kelurahan: p.kelurahan || "",
-        alamat_lengkap: p.alamat_lengkap || "",
-        kode_pos: p.kode_pos || "",
-        scan_ktp_url: p.scan_ktp_url || undefined,
+      nama_lengkap: p.nama_lengkap || "",
+      nik: p.nik || "",
+      nip_nim: p.nip_nim || "",
+      email: p.email || "",
+      jenis_kelamin: p.jenis_kelamin || "",
+      no_hp: p.no_hp || "",
+      fakultas: p.fakultas || "",
+      program_studi: p.program_studi || "",
+      kewarganegaraan: p.kewarganegaraan || "Indonesia",
+      negara: p.negara || "Indonesia",
+      provinsi: p.provinsi || "",
+      kota: p.kota || "",
+      kecamatan: p.kecamatan || "",
+      kelurahan: p.kelurahan || "",
+      alamat_lengkap: p.alamat_lengkap || "",
+      kode_pos: p.kode_pos || "",
+      scan_ktp_url: p.scan_ktp_url || undefined,
     })),
   };
 
