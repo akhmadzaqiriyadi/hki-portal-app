@@ -1,11 +1,15 @@
 "use server";
 
+
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { createClient } from "./server";
-import { StatusPendaftaran } from "../types";
+import { StatusPendaftaran, Pencipta } from "../types";
 import { AuthError } from "@supabase/supabase-js";
+import type { PendaftaranWithPemohon } from "../types";
+import { createClient, createAdminClient } from "./server"; 
+
+
 
 //================================================================
 // TIPE DATA & SKEMA VALIDASI (ZOD)
@@ -53,14 +57,17 @@ const PendaftaranBaruSchema = z.object({
 // FUNGSI HELPER (INTERNAL)
 //================================================================
 
-/** * Memeriksa apakah pengguna saat ini adalah Admin. 
- * Akan melempar (throw) Error jika tidak terautentikasi atau bukan admin.
- */
 async function checkAdmin() {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    // ✅ Gunakan client khusus untuk admin
+    const supabase = await createAdminClient(); 
+
+    // ✅ Pengecekan user tetap menggunakan client biasa untuk keamanan
+    const supabaseUser = await createClient();
+    const { data: { user } } = await supabaseUser.auth.getUser();
+
     if (!user) throw new Error("Otentikasi diperlukan.");
 
+    // Query ke tabel 'users' sekarang melewati RLS
     const { data: profile, error } = await supabase
       .from('users')
       .select('role')
@@ -206,18 +213,15 @@ export async function updatePendaftaranFileUrl(
 }
 
 
-// Skema validasi untuk form login
+// Skema validasi untuk form login (tidak berubah)
 const LoginSchema = z.object({
   email: z.string().email("Format email tidak valid."),
   password: z.string().min(6, "Password minimal 6 karakter."),
 });
 
-
 /**
  * Action untuk menangani login pengguna dengan email dan password.
- * @param prevState - State sebelumnya dari `useFormState`.
- * @param formData - Data dari elemen <form> yang memanggil action ini.
- * @returns Object FormState yang berisi status keberhasilan atau kegagalan.
+ * ✅ Diperbarui untuk mengarahkan pengguna berdasarkan peran (Admin/User).
  */
 export async function login(
   prevState: FormState,
@@ -225,7 +229,6 @@ export async function login(
 ): Promise<FormState> {
   const supabase = await createClient();
 
-  // 1. Validasi input menggunakan Zod
   const validatedFields = LoginSchema.safeParse(
     Object.fromEntries(formData.entries())
   );
@@ -240,24 +243,42 @@ export async function login(
 
   const { email, password } = validatedFields.data;
 
-  // 2. Lakukan proses login ke Supabase
-  const { error } = await supabase.auth.signInWithPassword({
+  // 1. Lakukan proses login ke Supabase
+  const { data: loginData, error: loginError } = await supabase.auth.signInWithPassword({
     email,
     password,
   });
 
-  if (error) {
-    // Tangani error spesifik dari Supabase
-    if (error instanceof AuthError && error.message.includes("Invalid login credentials")) {
+  if (loginError) {
+    if (loginError instanceof AuthError && loginError.message.includes("Invalid login credentials")) {
         return { success: false, message: "Email atau Password salah." };
     }
-    console.error("Login Error:", error);
+    console.error("Login Error:", loginError);
     return { success: false, message: "Terjadi kesalahan pada server. Coba lagi nanti." };
   }
 
-  // 3. Jika berhasil, revalidasi path dan redirect
-  revalidatePath("/", "layout"); // Revalidasi seluruh layout untuk update state auth
-  redirect("/dashboard"); // Arahkan pengguna ke halaman dashboard
+  // ✅ LANGKAH BARU: Jika login berhasil, cek peran pengguna
+  if (loginData.user) {
+    const { data: userProfile } = await supabase
+      .from("users")
+      .select("role")
+      .eq("id", loginData.user.id)
+      .single();
+
+    // Revalidasi path untuk memastikan sesi diperbarui di seluruh aplikasi
+    revalidatePath("/", "layout");
+
+    // ✅ Arahkan berdasarkan peran
+    if (userProfile?.role === 'Admin') {
+      console.log("User is Admin, redirecting to admin dashboard.");
+      redirect("/admin/dashboard");
+    } else {
+      console.log("User is a regular User, redirecting to user dashboard.");
+      redirect("/dashboard");
+    }
+  }
+
+  return { success: false, message: "Gagal mendapatkan data pengguna setelah login." };
 }
 
 
@@ -547,4 +568,73 @@ export async function updateRegistration(
   revalidatePath("/dashboard/pendaftaran");
   revalidatePath(`/dashboard/pendaftaran/${pendaftaranId}`);
   redirect(`/dashboard/pendaftaran/${pendaftaranId}`);
+}
+
+/**
+ * (Hanya Admin) Mengambil SEMUA data pendaftaran dari seluruh pengguna,
+ * KECUALI yang masih berstatus 'draft'.
+ */
+export async function getAllRegistrations() {
+  try {
+    await checkAdmin();
+    
+    const supabase = await createClient();
+
+    const { data, error } = await supabase
+      .from("pendaftaran")
+      .select(`
+        *,
+        users ( nama_lengkap )
+      `)
+      // ✅ PERBAIKAN: Tambahkan filter ini untuk tidak menyertakan status 'draft'
+      .neq('status', 'draft') 
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      throw error;
+    }
+
+    return { data: data as PendaftaranWithPemohon[], error: null };
+
+  } catch (e) {
+    const error = e as Error;
+    console.error("Gagal mengambil semua data pendaftaran:", error.message);
+    return { data: null, error: { message: error.message } };
+  }
+}
+
+
+/**
+ * (Hanya Admin) Mengambil detail satu pendaftaran berdasarkan ID.
+ * Termasuk data pemohon dan semua data pencipta.
+ */
+export async function getRegistrationByIdForAdmin(pendaftaranId: string) {
+  try {
+    // Keamanan: Pastikan hanya admin yang bisa menjalankan ini
+    await checkAdmin();
+    const supabase = await createClient();
+
+    const { data, error } = await supabase
+      .from("pendaftaran")
+      // ✅ Hapus 'email' dari select, karena tidak ada di tabel 'users'
+      .select(`
+        *,
+        users ( nama_lengkap, email ),
+        pencipta ( * )
+      `)
+      .eq("id", pendaftaranId)
+      .single();
+
+    if (error) {
+      throw error;
+    }
+
+    // Tipe PendaftaranWithPemohon sudah tidak memerlukan email, jadi ini aman
+    return { data: data as PendaftaranWithPemohon & { pencipta: Pencipta[] }, error: null };
+    
+  } catch (e) {
+    const error = e as Error;
+    console.error("Gagal mengambil detail pendaftaran untuk admin:", error.message);
+    return { data: null, error: { message: error.message } };
+  }
 }

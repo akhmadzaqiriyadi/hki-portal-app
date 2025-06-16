@@ -92,3 +92,13 @@ export interface UserProfile {
   created_at: string; // timestamptz
   updated_at: string; // timestamptz
 }
+
+/**
+ * Tipe gabungan untuk data pendaftaran beserta data pemohonnya (user).
+ */
+export interface PendaftaranWithPemohon extends Pendaftaran {
+  users: {
+    nama_lengkap: string | null;
+    email: string | null;
+  } | null;
+}

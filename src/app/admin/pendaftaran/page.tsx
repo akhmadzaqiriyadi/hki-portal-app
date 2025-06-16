@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getMyRegistrations } from "@/lib/supabase/actions";
+import { getAllRegistrations } from "@/lib/supabase/actions";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,12 +14,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { PlusCircle } from "lucide-react";
+import { Eye } from "lucide-react";
 import type { StatusPendaftaran } from "@/lib/types";
-import { PendaftaranActions } from "@/components/features/pendaftaran/PendaftaranActions";
 
-
-
+// Helper untuk Badge Status
 const getStatusVariant = (status: StatusPendaftaran) => {
   switch (status) {
     case "approved": return "success";
@@ -30,23 +28,18 @@ const getStatusVariant = (status: StatusPendaftaran) => {
 };
 
 
-export default async function PendaftaranListPage() {
-  const { data: pendaftaran, error } = await getMyRegistrations();
+export default async function AdminPendaftaranPage() {
+  const { data: pendaftaran, error } = await getAllRegistrations();
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Manajemen Pendaftaran HKI</h1>
+          <h1 className="text-2xl font-bold tracking-tight">Verifikasi Pendaftaran</h1>
           <p className="text-muted-foreground">
-            Semua pendaftaran yang pernah Anda ajukan ada di sini.
+            Review dan kelola semua pendaftaran HKI yang masuk dari pengguna.
           </p>
         </div>
-        <Button asChild>
-          <Link href="/dashboard/pendaftaran/baru">
-            <PlusCircle className="mr-2 h-4 w-4" /> Tambah Pendaftaran Baru
-          </Link>
-        </Button>
       </div>
       
       <Card>
@@ -57,9 +50,9 @@ export default async function PendaftaranListPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[40%]">Judul Karya</TableHead>
-                  <TableHead>Jenis Karya</TableHead>
-                  <TableHead className="hidden md:table-cell">Tanggal</TableHead>
+                  <TableHead className="w-[35%]">Judul Karya</TableHead>
+                  <TableHead>Pemohon</TableHead>
+                  <TableHead className="hidden lg:table-cell">Tanggal Diajukan</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead className="text-center">Aksi</TableHead>
                 </TableRow>
@@ -68,18 +61,22 @@ export default async function PendaftaranListPage() {
                 {pendaftaran.map((item) => (
                   <TableRow key={item.id}>
                     <TableCell className="font-medium">{item.judul}</TableCell>
-                    <TableCell>{item.jenis_karya}</TableCell>
-                    <TableCell className="hidden md:table-cell">
+                    <TableCell>{item.users?.nama_lengkap || 'N/A'}</TableCell>
+                    <TableCell className="hidden lg:table-cell">
                       {new Date(item.created_at).toLocaleDateString("id-ID")}
                     </TableCell>
                     <TableCell>
-                      <Badge variant={getStatusVariant(item.status)}>
-                        {item.status.charAt(0).toUpperCase() + item.status.slice(1)}
+                      <Badge variant={getStatusVariant(item.status)} className="capitalize">
+                        {item.status}
                       </Badge>
                     </TableCell>
                     <TableCell className="text-center">
-                       {/* ✅ INI PERBAIKANNYA: Kirim seluruh objek 'item' */}
-                       <PendaftaranActions pendaftaran={item} />
+                       <Button asChild size="sm" variant="outline">
+                         {/* Link ke halaman detail admin yang akan kita buat nanti */}
+                         <Link href={`/admin/pendaftaran/${item.id}`}>
+                           <Eye className="mr-2 h-4 w-4" /> Review
+                         </Link>
+                       </Button>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -87,15 +84,10 @@ export default async function PendaftaranListPage() {
             </Table>
           ) : (
             <div className="text-center py-16 px-6">
-              <h3 className="text-xl font-semibold">Anda Belum Punya Pendaftaran</h3>
-              <p className="text-muted-foreground mt-2 mb-4">
-                Mulai daftarkan karya pertama Anda sekarang juga!
+              <h3 className="text-xl font-semibold">Belum Ada Pendaftaran Masuk</h3>
+              <p className="text-muted-foreground mt-2">
+                Saat ini belum ada data pendaftaran dari pengguna.
               </p>
-              <Button asChild>
-                <Link href="/dashboard/pendaftaran/baru">
-                  <PlusCircle className="mr-2 h-4 w-4" /> Daftarkan HKI
-                </Link>
-              </Button>
             </div>
           )}
         </CardContent>

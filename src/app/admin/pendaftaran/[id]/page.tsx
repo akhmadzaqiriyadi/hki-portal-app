@@ -1,4 +1,4 @@
-import { getRegistrationById } from "@/lib/supabase/actions";
+import { getRegistrationByIdForAdmin } from "@/lib/supabase/actions";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -17,12 +17,10 @@ import {
   ImageIcon,
   Download,
   UploadCloud,
-  Edit,
 } from "lucide-react";
 import type { StatusPendaftaran } from "@/lib/types";
-import { FinalizeButton } from "@/components/features/pendaftaran/FinalizeButton";
+import { AdminStatusActions } from "@/components/features/admin/AdminStatusActions";
 
-// Helper untuk Badge Status
 const getStatusVariant = (status: StatusPendaftaran) => {
   switch (status) {
     case "approved": return "success";
@@ -43,7 +41,7 @@ function DetailItem({
 }) {
   if (!value && value !== 0) return null;
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-1 md:gap-4 py-2 border-b">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-1 md:gap-4 py-2 border-b last:border-b-0">
       <dt className="text-sm font-semibold text-muted-foreground">{label}</dt>
       <dd className="text-sm col-span-2">{value}</dd>
     </div>
@@ -77,20 +75,20 @@ function FilePreviewLink({
     <div className="space-y-2">
       <p className="text-sm font-medium">{label}</p>
       <div className="border rounded-lg p-2 flex items-center justify-between">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 overflow-hidden">
           {isImage ? (
-            <ImageIcon className="h-8 w-8 text-primary" />
+            <ImageIcon className="h-8 w-8 text-primary flex-shrink-0" />
           ) : (
-            <FileText className="h-8 w-8 text-primary" />
+            <FileText className="h-8 w-8 text-primary flex-shrink-0" />
           )}
           <span
-            className="text-sm truncate max-w-[200px]"
+            className="text-sm truncate"
             title={url.split("/").pop()?.split("_").slice(1).join("_")}
           >
             {url.split("/").pop()?.split("_").slice(1).join("_")}
           </span>
         </div>
-        <Button asChild variant="outline" size="sm">
+        <Button asChild variant="outline" size="sm" className="flex-shrink-0">
           <Link href={url} target="_blank" rel="noopener noreferrer">
             <Download className="mr-2 h-4 w-4" /> Lihat
           </Link>
@@ -110,34 +108,36 @@ function FilePreviewLink({
   );
 }
 
-export default async function DetailPendaftaranPage({
+export default async function AdminDetailPendaftaranPage({
   params,
 }: {
-  // Tipe props tidak perlu diubah, Next.js menangani ini secara internal
   params: { id: string };
 }) {
-  // ✅ PERBAIKAN UTAMA: 'await' params sebelum mengambil propertinya
+  // Menggunakan pola Next.js 15 yang benar
   const { id } = await params;
-
-  // Gunakan 'id' yang sudah di-await untuk mengambil data
-  const { data: pendaftaran, error } = await getRegistrationById(id);
+  const { data: pendaftaran, error } = await getRegistrationByIdForAdmin(id);
 
   if (error || !pendaftaran) {
     notFound();
   }
 
-  const isDraft = pendaftaran.status === "draft";
-
   return (
     <div className="space-y-6">
       {/* --- Bagian Header Utama --- */}
-      <div className="flex justify-between items-start gap-4">
+      <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
         <div>
           <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
             {pendaftaran.judul}
           </h1>
           <p className="text-muted-foreground">
-            Diajukan pada:{" "}
+            Diajukan oleh:{" "}
+            <span className="font-semibold text-primary">
+              {pendaftaran.users?.nama_lengkap || "N/A"}
+            </span>
+            {" "}({pendaftaran.users?.email || "N/A"})
+          </p>
+          <p className="text-sm text-muted-foreground mt-1">
+            Tanggal Pengajuan:{" "}
             {new Date(pendaftaran.created_at).toLocaleDateString("id-ID", {
               year: "numeric",
               month: "long",
@@ -145,26 +145,21 @@ export default async function DetailPendaftaranPage({
             })}
           </p>
         </div>
-
-        {isDraft ? (
-          <div className="flex items-center gap-2 flex-shrink-0 mt-2">
-            <Button asChild variant="outline">
-              <Link href={`/dashboard/pendaftaran/${pendaftaran.id}/edit`}>
-                <Edit className="mr-2 h-4 w-4" />
-                Edit
-              </Link>
-            </Button>
-            <FinalizeButton pendaftaranId={pendaftaran.id} />
-          </div>
-        ) : (
-          <Badge
-            variant={getStatusVariant(pendaftaran.status)}
-            className="text-base py-1 px-3 capitalize"
-          >
-            {pendaftaran.status}
-          </Badge>
-        )}
+        <div className="flex-shrink-0">
+            <Badge
+                variant={getStatusVariant(pendaftaran.status)}
+                className="text-base py-2 px-4 capitalize w-full md:w-auto"
+            >
+                Status: {pendaftaran.status}
+            </Badge>
+        </div>
       </div>
+
+      {/* Komponen Aksi Admin */}
+      <AdminStatusActions
+        pendaftaranId={pendaftaran.id}
+        currentStatus={pendaftaran.status}
+      />
 
       {/* --- Detail Karya --- */}
       <Card>
@@ -213,14 +208,13 @@ export default async function DetailPendaftaranPage({
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
-          {pendaftaran.pencipta.map((p: any, index: number) => (
+          {pendaftaran.pencipta.map((p, index) => (
             <div
               key={p.id}
               className="border p-4 rounded-lg bg-muted/20 space-y-4"
             >
-              <h3 className="font-semibold text-lg">Pencipta {index + 1}</h3>
+              <h3 className="font-semibold text-lg">Pencipta {index + 1}: {p.nama_lengkap}</h3>
               <dl className="space-y-1">
-                <DetailItem label="Nama Lengkap" value={p.nama_lengkap} />
                 <DetailItem label="NIK" value={p.nik} />
                 <DetailItem label="NIP / NIM" value={p.nip_nim} />
                 <DetailItem label="Email" value={p.email} />
@@ -231,7 +225,6 @@ export default async function DetailPendaftaranPage({
                 <DetailItem label="Alamat" value={p.alamat_lengkap} />
                 <DetailItem label="Kewarganegaraan" value={p.kewarganegaraan} />
               </dl>
-              {/* ✅ TAMBAHAN: Menampilkan preview Scan KTP untuk setiap pencipta */}
               <div className="pt-4 border-t">
                 <FilePreviewLink
                   url={p.scan_ktp_url}

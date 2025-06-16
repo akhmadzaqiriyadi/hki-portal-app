@@ -25,17 +25,13 @@ import type { StatusPendaftaran } from "@/lib/types";
  */
 const getStatusVariant = (status: StatusPendaftaran) => {
   switch (status) {
-    case 'approved':
-      return 'success'; 
-    case 'revisi':
-      return 'destructive';
-    case 'submitted':
-    case 'review':
-      return 'secondary';
-    default:
-      return 'default';
+    case "approved": return "success";
+    case "revisi": return "destructive";
+    case "submitted": return "warning";
+    default: return "secondary";
   }
 };
+
 
 export default async function DashboardPage() {
   const { data: pendaftaran, error } = await getMyRegistrations();
