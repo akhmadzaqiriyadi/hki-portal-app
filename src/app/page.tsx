@@ -82,7 +82,8 @@ export default function HomePage() {
             <div className="grid gap-8 lg:grid-cols-2 lg:gap-16 items-center">
               <div className="flex flex-col justify-center space-y-8">
                 {/* Trust badge */}
-                <div className="flex items-center gap-2 text-sm text-blue-800 bg-blue-50 backdrop-blur-sm rounded-full px-4 py-2 w-fit border border-blue-200/60">
+                <div className="flex items-center gap-2 text-sm text-blue-800 bg-blue-50 backdrop-blur-sm rounded-full px-4 py-2 -mt-8
+                w-fit border border-blue-200/60">
                   <CheckCircle className="h-4 w-4 text-blue-700" />
                   Dipercaya civitas akademika UTY
                 </div>
