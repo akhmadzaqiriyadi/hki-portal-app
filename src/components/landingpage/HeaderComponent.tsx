@@ -109,7 +109,7 @@ export default function Header({ onLogin, onRegister }: HeaderProps) {
               </button>
               {isDropdownOpen && (
                 <div className="ml-4 mt-2 space-y-2">
-                  <a href="hak-cipta" className="block text-sm text-slate-500 hover:text-blue-800">HAK CIPTA</a>
+                  <a href="hakcipta" className="block text-sm text-slate-500 hover:text-blue-800">HAK CIPTA</a>
                   <a href="#paten" className="block text-sm text-slate-500 hover:text-blue-800">PATEN</a>
                   <a href="#desain-industri" className="block text-sm text-slate-500 hover:text-blue-800">DESAIN INDUSTRI</a>
                 </div>
