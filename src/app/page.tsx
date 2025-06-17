@@ -1,16 +1,22 @@
 'use client';
 import React from 'react';
-import { ArrowRight, FileText, BarChart, ShieldCheck, CheckCircle, Users, Clock, Award, Menu, X, GraduationCap, Building } from "lucide-react";
+import { useRouter } from 'next/navigation';
+import { ArrowRight, FileText, BarChart, ShieldCheck, CheckCircle, Users, Clock, Award, Menu, X, GraduationCap } from "lucide-react";
 import Image from 'next/image';
 
 export default function HomePage() {
+  const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
   const handleRegister = () => {
+    // Navigate to registration page
+    router.push('/register');
     console.log("Navigate to register");
   };
 
   const handleLogin = () => {
+    // Navigate to login page
+    router.push('/login');
     console.log("Navigate to login");
   };
 
