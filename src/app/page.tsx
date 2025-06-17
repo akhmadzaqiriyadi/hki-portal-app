@@ -133,7 +133,7 @@ export default function HomePage() {
                 <div className="relative bg-gradient-to-br from-blue-300 to-blue-400 rounded-3xl p-8 shadow-2xl">
                   <div className="aspect-square bg-gradient-to-br from-blue-300 to-blue-200 rounded-2xl shadow-inner flex items-center justify-center">
                     <Image
-                      src="/hero.svg"
+                      src="/Hero.svg"
                       alt="Hero Image"
                       width={400}
                       height={400}
