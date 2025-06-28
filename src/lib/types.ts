@@ -74,6 +74,7 @@ export interface Pendaftaran {
   status: StatusPendaftaran;
   created_at: string; // timestamptz
   updated_at: string; // timestamptz
+  catatan_revisi?: string | null;
 }
 
 /**

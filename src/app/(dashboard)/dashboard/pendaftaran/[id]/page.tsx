@@ -18,6 +18,7 @@ import {
   Download,
   UploadCloud,
   Edit,
+  MessageSquareWarning,
 } from "lucide-react";
 import type { StatusPendaftaran } from "@/lib/types";
 import { FinalizeButton } from "@/components/features/pendaftaran/FinalizeButton";
@@ -49,7 +50,7 @@ function DetailItem({
 }) {
   if (!value && value !== 0) return null;
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-1 md:gap-4 py-2 border-b">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-1 md:gap-4 py-2 border-b last:border-b-0">
       <dt className="text-sm font-semibold text-muted-foreground">{label}</dt>
       <dd className="text-sm col-span-2">{value}</dd>
     </div>
@@ -83,20 +84,20 @@ function FilePreviewLink({
     <div className="space-y-2">
       <p className="text-sm font-medium">{label}</p>
       <div className="border rounded-lg p-2 flex items-center justify-between">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 overflow-hidden">
           {isImage ? (
-            <ImageIcon className="h-8 w-8 text-primary" />
+            <ImageIcon className="h-8 w-8 text-primary flex-shrink-0" />
           ) : (
-            <FileText className="h-8 w-8 text-primary" />
+            <FileText className="h-8 w-8 text-primary flex-shrink-0" />
           )}
           <span
-            className="text-sm truncate max-w-[200px]"
+            className="text-sm truncate"
             title={url.split("/").pop()?.split("_").slice(1).join("_")}
           >
             {url.split("/").pop()?.split("_").slice(1).join("_") || "file"}
           </span>
         </div>
-        <Button asChild variant="outline" size="sm">
+        <Button asChild variant="outline" size="sm" className="flex-shrink-0">
           <Link href={url} target="_blank" rel="noopener noreferrer">
             <Download className="mr-2 h-4 w-4" /> Lihat
           </Link>
@@ -131,12 +132,14 @@ export default async function DetailPendaftaranPage({
   }
 
   const isDraft = pendaftaran.status === "draft";
-  const jenisKaryaLabel = copyrightCategories[pendaftaran.jenis_karya]?.label || pendaftaran.jenis_karya;
+  const isRevision = pendaftaran.status === "revisi";
+  const jenisKaryaLabel =
+    copyrightCategories[pendaftaran.jenis_karya as keyof typeof copyrightCategories]?.label || pendaftaran.jenis_karya;
 
   return (
     <div className="space-y-6">
       {/* --- Bagian Header Utama --- */}
-      <div className="flex justify-between items-start gap-4">
+      <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
         <div>
           <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
             {pendaftaran.judul}
@@ -151,25 +154,53 @@ export default async function DetailPendaftaranPage({
           </p>
         </div>
 
-        {isDraft ? (
-          <div className="flex items-center gap-2 flex-shrink-0 mt-2">
-            <Button asChild variant="outline">
+        <div className="flex-shrink-0 mt-2 md:mt-0">
+          {isDraft ? (
+            <div className="flex items-center gap-2">
+              <Button asChild variant="outline">
+                <Link href={`/dashboard/pendaftaran/${pendaftaran.id}/edit`}>
+                  <Edit className="mr-2 h-4 w-4" /> Edit
+                </Link>
+              </Button>
+              <FinalizeButton pendaftaranId={pendaftaran.id} />
+            </div>
+          ) : (
+            <Badge
+              variant={getStatusVariant(pendaftaran.status)}
+              className="text-base py-2 px-4 capitalize w-full text-center"
+            >
+              {pendaftaran.status}
+            </Badge>
+          )}
+        </div>
+      </div>
+
+      {/* --- Card Catatan Revisi --- */}
+      {isRevision && pendaftaran.catatan_revisi && (
+        <Card className="border-destructive bg-destructive/5">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-destructive">
+              <MessageSquareWarning className="w-5 h-5" />
+              Pendaftaran Perlu Direvisi
+            </CardTitle>
+            <CardDescription className="text-destructive/90">
+              Silakan perbaiki pendaftaran Anda sesuai catatan dari admin, lalu
+              selesaikan proses perbaikan.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-destructive/90 whitespace-pre-wrap font-medium">
+              {pendaftaran.catatan_revisi}
+            </p>
+            <Button asChild className="mt-4">
               <Link href={`/dashboard/pendaftaran/${pendaftaran.id}/edit`}>
                 <Edit className="mr-2 h-4 w-4" />
-                Edit
+                Perbaiki Pendaftaran
               </Link>
             </Button>
-            <FinalizeButton pendaftaranId={pendaftaran.id} />
-          </div>
-        ) : (
-          <Badge
-            variant={getStatusVariant(pendaftaran.status)}
-            className="text-base py-1 px-3 capitalize"
-          >
-            {pendaftaran.status}
-          </Badge>
-        )}
-      </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* --- Detail Karya --- */}
       <Card>
@@ -180,7 +211,10 @@ export default async function DetailPendaftaranPage({
         </CardHeader>
         <CardContent>
           <dl className="space-y-1">
-            <DetailItem label="Jenis Pemilik" value={pendaftaran.jenis_pemilik} />
+            <DetailItem
+              label="Jenis Pemilik"
+              value={pendaftaran.jenis_pemilik}
+            />
             <DetailItem label="Produk Hasil" value={pendaftaran.produk_hasil} />
             <DetailItem label="Jenis Karya" value={jenisKaryaLabel} />
             <DetailItem
@@ -220,21 +254,24 @@ export default async function DetailPendaftaranPage({
         </CardHeader>
         <CardContent className="space-y-6">
           {pendaftaran.pencipta.map((p: any, index: number) => {
-            
             const alamatLengkap = [
               p.alamat_lengkap,
               p.kelurahan,
               p.kecamatan,
               p.kota,
               p.provinsi,
-            ].filter(Boolean).join(", ");
+            ]
+              .filter(Boolean)
+              .join(", ");
 
             return (
               <div
-                key={p.nik || index}
+                key={p.id || index}
                 className="border p-4 rounded-lg bg-muted/20 space-y-4"
               >
-                <h3 className="font-semibold text-lg">Pencipta {index + 1}</h3>
+                <h3 className="font-semibold text-lg">
+                  Pencipta {index + 1}
+                </h3>
                 <dl className="space-y-1">
                   <DetailItem label="Nama Lengkap" value={p.nama_lengkap} />
                   <DetailItem label="NIK" value={p.nik} />
@@ -246,7 +283,10 @@ export default async function DetailPendaftaranPage({
                   <DetailItem label="Program Studi" value={p.program_studi} />
                   <DetailItem label="Alamat Lengkap" value={alamatLengkap} />
                   <DetailItem label="Kode Pos" value={p.kode_pos} />
-                  <DetailItem label="Kewarganegaraan" value={p.kewarganegaraan} />
+                  <DetailItem
+                    label="Kewarganegaraan"
+                    value={p.kewarganegaraan}
+                  />
                 </dl>
               </div>
             );

@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardContent,
+  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -16,6 +17,7 @@ import {
   ImageIcon,
   Download,
   UploadCloud,
+  MessageSquareWarning,
 } from "lucide-react";
 import type { StatusPendaftaran } from "@/lib/types";
 import { AdminStatusActions } from "@/components/features/admin/AdminStatusActions";
@@ -151,20 +153,41 @@ export default async function AdminDetailPendaftaranPage({
           </p>
         </div>
         <div className="flex-shrink-0">
-            <Badge
-                variant={getStatusVariant(pendaftaran.status)}
-                className="text-base py-2 px-4 capitalize w-full md:w-auto"
-            >
-                Status: {pendaftaran.status}
-            </Badge>
+          <Badge
+            variant={getStatusVariant(pendaftaran.status)}
+            className="text-base py-2 px-4 capitalize w-full md:w-auto"
+          >
+            Status: {pendaftaran.status}
+          </Badge>
         </div>
       </div>
 
-      {/* Komponen Aksi Admin */}
+      {/* --- Komponen Aksi Admin --- */}
       <AdminStatusActions
         pendaftaranId={pendaftaran.id}
         currentStatus={pendaftaran.status}
+        currentRevisionNote={pendaftaran.catatan_revisi}
       />
+
+      {/* --- Card Catatan Revisi (Hanya tampil jika ada) --- */}
+      {pendaftaran.status === "revisi" && pendaftaran.catatan_revisi && (
+        <Card className="border-yellow-400 bg-yellow-50">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-yellow-800">
+              <MessageSquareWarning className="w-5 h-5" />
+              Catatan Revisi untuk Pengguna
+            </CardTitle>
+            <CardDescription className="text-yellow-700">
+              Ini adalah catatan yang ditampilkan kepada pengguna untuk perbaikan.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-yellow-900 whitespace-pre-wrap">
+              {pendaftaran.catatan_revisi}
+            </p>
+          </CardContent>
+        </Card>
+      )}
 
       {/* --- Detail Karya --- */}
       <Card>
@@ -214,22 +237,24 @@ export default async function AdminDetailPendaftaranPage({
         </CardHeader>
         <CardContent className="space-y-6">
           {pendaftaran.pencipta.map((p, index) => {
-            
-            // ✅ PERBAIKAN: Gabungkan semua komponen alamat menjadi satu
             const alamatLengkap = [
               p.alamat_lengkap,
               p.kelurahan,
               p.kecamatan,
               p.kota,
               p.provinsi,
-            ].filter(Boolean).join(", ");
-            
+            ]
+              .filter(Boolean)
+              .join(", ");
+
             return (
               <div
-                key={p.nik || index} // Gunakan NIK sebagai key jika ada
+                key={p.nik || index}
                 className="border p-4 rounded-lg bg-muted/20 space-y-4"
               >
-                <h3 className="font-semibold text-lg">Pencipta {index + 1}: {p.nama_lengkap}</h3>
+                <h3 className="font-semibold text-lg">
+                  Pencipta {index + 1}: {p.nama_lengkap}
+                </h3>
                 <dl className="space-y-1">
                   <DetailItem label="NIK" value={p.nik} />
                   <DetailItem label="NIP / NIM" value={p.nip_nim} />
@@ -238,14 +263,12 @@ export default async function AdminDetailPendaftaranPage({
                   <DetailItem label="Jenis Kelamin" value={p.jenis_kelamin} />
                   <DetailItem label="Fakultas" value={p.fakultas} />
                   <DetailItem label="Program Studi" value={p.program_studi} />
-
-                  {/* ✅ PERBAIKAN: Tampilkan alamat yang sudah digabung */}
                   <DetailItem label="Alamat Lengkap" value={alamatLengkap} />
-
-                  {/* ✅ TAMBAHAN: Tampilkan juga kode pos */}
                   <DetailItem label="Kode Pos" value={p.kode_pos} />
-
-                  <DetailItem label="Kewarganegaraan" value={p.kewarganegaraan} />
+                  <DetailItem
+                    label="Kewarganegaraan"
+                    value={p.kewarganegaraan}
+                  />
                 </dl>
                 <div className="pt-4 border-t">
                   <FilePreviewLink

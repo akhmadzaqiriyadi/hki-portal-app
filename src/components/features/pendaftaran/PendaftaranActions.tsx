@@ -35,13 +35,15 @@ export function PendaftaranActions({ pendaftaran }: PendaftaranActionsProps) {
   const [isPending, startTransition] = useTransition();
   const [isConfirmOpen, setConfirmOpen] = useState(false);
 
-  // ✅ Ambil id dan status dari objek pendaftaran
+  // Ambil id dan status dari objek pendaftaran
   const { id: pendaftaranId, status } = pendaftaran;
+  
+  // ✅ Buat konstanta boolean untuk setiap kondisi agar lebih mudah dibaca
   const isDraft = status === "draft";
+  const isRevisi = status === "revisi";
 
   const handleDelete = () => {
     startTransition(async () => {
-      // Gunakan pendaftaranId yang sudah kita ambil
       const result = await deleteRegistration(pendaftaranId);
       if (result.success) {
         toast.success("Berhasil!", { description: result.message });
@@ -61,8 +63,7 @@ export function PendaftaranActions({ pendaftaran }: PendaftaranActionsProps) {
               Apakah Anda Yakin Ingin Menghapus?
             </AlertDialogTitle>
             <AlertDialogDescription>
-              Aksi ini tidak dapat dibatalkan. Hanya lakukan pada pendaftaran
-              yang berstatus Draf.
+              Aksi ini tidak dapat dibatalkan. Pendaftaran akan dihapus secara permanen.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -96,27 +97,36 @@ export function PendaftaranActions({ pendaftaran }: PendaftaranActionsProps) {
             }
           >
             <Eye className="mr-2 h-4 w-4" />
-            <span>{isDraft ? "Review & Finalisasi" : "Lihat Detail"}</span>
+            {/* ✅ Ubah label berdasarkan status */}
+            <span>
+              {isDraft
+                ? "Review & Finalisasi"
+                : isRevisi
+                ? "Lihat & Perbaiki"
+                : "Lihat Detail"}
+            </span>
           </DropdownMenuItem>
 
+          {/* ✅ Tampilkan aksi Edit & Hapus berdasarkan kondisi */}
+          {(isDraft || isRevisi) && (
+            <DropdownMenuItem
+              onClick={() =>
+                router.push(`/dashboard/pendaftaran/${pendaftaranId}/edit`)
+              }
+            >
+              <Edit className="mr-2 h-4 w-4" />
+              <span>Edit</span>
+            </DropdownMenuItem>
+          )}
+
           {isDraft && (
-            <>
-              <DropdownMenuItem
-                onClick={() =>
-                  router.push(`/dashboard/pendaftaran/${pendaftaranId}/edit`)
-                }
-              >
-                <Edit className="mr-2 h-4 w-4" />
-                <span>Edit</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                className="text-destructive focus:bg-destructive/10 focus:text-destructive"
-                onClick={() => setConfirmOpen(true)}
-              >
-                <Trash2 className="mr-2 h-4 w-4" />
-                <span>Hapus</span>
-              </DropdownMenuItem>
-            </>
+            <DropdownMenuItem
+              className="text-destructive focus:bg-destructive/10 focus:text-destructive"
+              onClick={() => setConfirmOpen(true)}
+            >
+              <Trash2 className="mr-2 h-4 w-4" />
+              <span>Hapus</span>
+            </DropdownMenuItem>
           )}
         </DropdownMenuContent>
       </DropdownMenu>

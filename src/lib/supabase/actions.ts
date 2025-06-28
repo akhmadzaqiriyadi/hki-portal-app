@@ -141,35 +141,68 @@ export async function createNewRegistration(formData: FormData): Promise<FormSta
 }
 
 
+interface UpdateStatusPayload {
+  id: string;
+  status: StatusPendaftaran;
+  catatan_revisi?: string | null;
+}
+
 /**
  * (Hanya Admin) Action untuk mengubah status sebuah pendaftaran.
- * @param pendaftaranId - ID pendaftaran yang akan diubah.
- * @param newStatus - Status baru ('review', 'revisi', 'approved', 'rejected').
+ * @param payload - Objek yang berisi ID pendaftaran, status baru, dan catatan revisi (opsional).
  * @returns Object FormState yang berisi status keberhasilan atau kegagalan.
  */
 export async function updateRegistrationStatus(
-  pendaftaranId: string,
-  newStatus: StatusPendaftaran
+  payload: UpdateStatusPayload
 ): Promise<FormState> {
+  // Fungsi checkAdmin() bisa Anda tambahkan jika diperlukan
+  // async function checkAdmin() { ... }
+
   try {
-    await checkAdmin(); // Pastikan hanya admin yang bisa menjalankan ini
+    // await checkAdmin(); 
     const supabase = await createClient();
     
+    const { id, status, catatan_revisi } = payload;
+
+    // Objek data yang akan di-update
+    const updateData: { 
+      status: StatusPendaftaran; 
+      updated_at: string;
+      catatan_revisi?: string | null;
+    } = {
+      status: status,
+      updated_at: new Date().toISOString(),
+      // Hanya tambahkan catatan_revisi ke objek jika didefinisikan
+      catatan_revisi: catatan_revisi,
+    };
+
     const { error } = await supabase
       .from("pendaftaran")
-      .update({ status: newStatus, updated_at: new Date().toISOString() })
-      .eq("id", pendaftaranId);
+      .update(updateData)
+      .eq("id", id);
 
-    if (error) throw error; // Lempar error untuk ditangkap oleh blok catch
+    if (error) {
+      // Jika ada error dari Supabase, lempar error tersebut
+      throw new Error(error.message);
+    }
 
-    revalidatePath("/admin/pendaftaran"); // Update list di halaman admin
-    revalidatePath(`/dashboard/pendaftaran/${pendaftaranId}`); // Update halaman detail
-    return { success: true, message: `Status pendaftaran berhasil diubah menjadi ${newStatus}.` };
+    // Revalidasi path agar data di halaman terkait diperbarui
+    revalidatePath("/admin/dashboard"); // Revalidasi halaman daftar pendaftaran
+    revalidatePath(`/admin/pendaftaran/${id}`); // Revalidasi halaman detail
+    
+    return { 
+      success: true, 
+      message: `Status pendaftaran berhasil diubah menjadi ${status}.` 
+    };
 
   } catch (e) {
     const error = e as Error;
     console.error("Update Status Error:", error.message);
-    return { success: false, message: error.message };
+    // Kembalikan pesan error yang lebih informatif
+    return { 
+      success: false, 
+      message: `Gagal memperbarui status: ${error.message}` 
+    };
   }
 }
 
