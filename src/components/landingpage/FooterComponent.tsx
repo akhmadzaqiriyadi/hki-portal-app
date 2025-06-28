@@ -22,9 +22,9 @@ export default function Footer() {
             <h3 className="font-semibold text-slate-900 mb-4">Layanan HKI</h3>
             <ul className="space-y-2 text-slate-600">
               <li><a href="#" className="hover:text-blue-800 transition-colors">Hak Cipta</a></li>
-              <li><a href="#" className="hover:text-blue-800 transition-colors">Paten</a></li>
-              <li><a href="#" className="hover:text-blue-800 transition-colors">Merek Dagang</a></li>
-              <li><a href="#" className="hover:text-blue-800 transition-colors">Desain Industri</a></li>
+              <li><a href="#" className="hover:text-blue-800 transition-colors">Paten (coming soon)</a></li>
+              <li><a href="#" className="hover:text-blue-800 transition-colors">Merek Dagang (coming soon)</a></li>
+              <li><a href="#" className="hover:text-blue-800 transition-colors">Desain Industri (coming soon)</a></li>
             </ul>
           </div>
           

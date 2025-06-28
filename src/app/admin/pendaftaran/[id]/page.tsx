@@ -6,7 +6,6 @@ import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -23,10 +22,16 @@ import { AdminStatusActions } from "@/components/features/admin/AdminStatusActio
 
 const getStatusVariant = (status: StatusPendaftaran) => {
   switch (status) {
-    case "approved": return "success";
-    case "revisi": return "destructive";
-    case "submitted": return "warning";
-    default: return "secondary";
+    case "approved":
+      return "success";
+    case "diproses_hki":
+      return "info";
+    case "revisi":
+      return "destructive";
+    case "submitted":
+      return "warning";
+    default:
+      return "secondary";
   }
 };
 
@@ -107,7 +112,6 @@ function FilePreviewLink({
   );
 }
 
-// ✅ PERBAIKAN: Definisi props yang benar untuk Next.js 15
 interface AdminDetailPendaftaranPageProps {
   params: Promise<{ id: string }>;
 }
@@ -115,7 +119,6 @@ interface AdminDetailPendaftaranPageProps {
 export default async function AdminDetailPendaftaranPage({
   params,
 }: AdminDetailPendaftaranPageProps) {
-  // Await params untuk mendapatkan nilai id
   const { id } = await params;
   const { data: pendaftaran, error } = await getRegistrationByIdForAdmin(id);
 
@@ -210,31 +213,49 @@ export default async function AdminDetailPendaftaranPage({
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
-          {pendaftaran.pencipta.map((p, index) => (
-            <div
-              key={p.id}
-              className="border p-4 rounded-lg bg-muted/20 space-y-4"
-            >
-              <h3 className="font-semibold text-lg">Pencipta {index + 1}: {p.nama_lengkap}</h3>
-              <dl className="space-y-1">
-                <DetailItem label="NIK" value={p.nik} />
-                <DetailItem label="NIP / NIM" value={p.nip_nim} />
-                <DetailItem label="Email" value={p.email} />
-                <DetailItem label="No. HP" value={p.no_hp} />
-                <DetailItem label="Jenis Kelamin" value={p.jenis_kelamin} />
-                <DetailItem label="Fakultas" value={p.fakultas} />
-                <DetailItem label="Program Studi" value={p.program_studi} />
-                <DetailItem label="Alamat" value={p.alamat_lengkap} />
-                <DetailItem label="Kewarganegaraan" value={p.kewarganegaraan} />
-              </dl>
-              <div className="pt-4 border-t">
-                <FilePreviewLink
-                  url={p.scan_ktp_url}
-                  label="Scan KTP Pencipta"
-                />
+          {pendaftaran.pencipta.map((p, index) => {
+            
+            // ✅ PERBAIKAN: Gabungkan semua komponen alamat menjadi satu
+            const alamatLengkap = [
+              p.alamat_lengkap,
+              p.kelurahan,
+              p.kecamatan,
+              p.kota,
+              p.provinsi,
+            ].filter(Boolean).join(", ");
+            
+            return (
+              <div
+                key={p.nik || index} // Gunakan NIK sebagai key jika ada
+                className="border p-4 rounded-lg bg-muted/20 space-y-4"
+              >
+                <h3 className="font-semibold text-lg">Pencipta {index + 1}: {p.nama_lengkap}</h3>
+                <dl className="space-y-1">
+                  <DetailItem label="NIK" value={p.nik} />
+                  <DetailItem label="NIP / NIM" value={p.nip_nim} />
+                  <DetailItem label="Email" value={p.email} />
+                  <DetailItem label="No. HP" value={p.no_hp} />
+                  <DetailItem label="Jenis Kelamin" value={p.jenis_kelamin} />
+                  <DetailItem label="Fakultas" value={p.fakultas} />
+                  <DetailItem label="Program Studi" value={p.program_studi} />
+
+                  {/* ✅ PERBAIKAN: Tampilkan alamat yang sudah digabung */}
+                  <DetailItem label="Alamat Lengkap" value={alamatLengkap} />
+
+                  {/* ✅ TAMBAHAN: Tampilkan juga kode pos */}
+                  <DetailItem label="Kode Pos" value={p.kode_pos} />
+
+                  <DetailItem label="Kewarganegaraan" value={p.kewarganegaraan} />
+                </dl>
+                <div className="pt-4 border-t">
+                  <FilePreviewLink
+                    url={p.scan_ktp_url}
+                    label="Scan KTP Pencipta"
+                  />
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </CardContent>
       </Card>
 

@@ -5,39 +5,43 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 import type { Pencipta } from "@/lib/types";
 
-// ✅ PERBAIKAN: Definisi props yang benar untuk Next.js 15
-interface EditPendaftaranPageProps {
-  params: Promise<{ id: string }>;
-}
-
+// ✅ PERBAIKAN: Gunakan `params` langsung seperti biasa di Server Component
 export default async function EditPendaftaranPage({
   params,
-}: EditPendaftaranPageProps) {
-  // Await params untuk mendapatkan nilai id
-  const { id } = await params;
+}: {
+  params: { id: string };
+}) {
+  const { id } = params;
 
+  // PENTING: Pastikan fungsi ini melakukan SELECT pada semua kolom yang dibutuhkan!
   const { data: pendaftaran, error } = await getRegistrationById(id);
 
   if (error || !pendaftaran) {
     notFound();
   }
 
-  if (pendaftaran.status !== "draft") {
+  // Jika status bukan 'draft' atau 'revisi', tolak akses edit
+  if (pendaftaran.status !== "draft" && pendaftaran.status !== "revisi") {
     return (
       <div className="container mx-auto max-w-2xl py-10">
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
           <AlertTitle>Akses Ditolak</AlertTitle>
           <AlertDescription>
-            Pendaftaran ini sudah tidak bisa diubah.
+            Pendaftaran dengan status "{pendaftaran.status}" sudah tidak bisa
+            diubah lagi.
           </AlertDescription>
         </Alert>
       </div>
     );
   }
 
-  // Transformasi data untuk mencegah error 'uncontrolled input'
+  // ====================================================================
+  // ▼▼▼ PERBAIKAN UTAMA DI SINI ▼▼▼
+  // ====================================================================
+  // Transformasi data untuk memastikan semua field ada dan mencegah error.
   const formInitialData = {
+    // Data yang sudah ada di kode Anda
     judul: pendaftaran.judul || "",
     produk_hasil: pendaftaran.produk_hasil || "",
     jenis_karya: pendaftaran.jenis_karya || "",
@@ -52,6 +56,13 @@ export default async function EditPendaftaranPage({
     bukti_transfer_url: pendaftaran.bukti_transfer_url || undefined,
     surat_pernyataan_url: pendaftaran.surat_pernyataan_url || undefined,
     surat_pengalihan_url: pendaftaran.surat_pengalihan_url || undefined,
+
+    // --- KOLOM YANG HILANG DITAMBAHKAN DI SINI ---
+    jenis_pemilik: pendaftaran.jenis_pemilik || undefined,
+    scan_ktp_kolektif_url: pendaftaran.scan_ktp_kolektif_url || undefined,
+    // ---------------------------------------------
+
+    // Perbaikan pada mapping 'pencipta'
     pencipta: pendaftaran.pencipta.map((p: Pencipta) => ({
       nama_lengkap: p.nama_lengkap || "",
       nik: p.nik || "",
@@ -63,19 +74,27 @@ export default async function EditPendaftaranPage({
       program_studi: p.program_studi || "",
       kewarganegaraan: p.kewarganegaraan || "Indonesia",
       negara: p.negara || "Indonesia",
-      provinsi: p.provinsi || "",
+      provinsi: p.provinsi || "", // Ini akan diisi dengan nama, bukan ID, jika data lama
       kota: p.kota || "",
       kecamatan: p.kecamatan || "",
       kelurahan: p.kelurahan || "",
       alamat_lengkap: p.alamat_lengkap || "",
       kode_pos: p.kode_pos || "",
-      scan_ktp_url: p.scan_ktp_url || undefined,
+      // 'scan_ktp_url' perorangan sudah tidak ada, jadi kita hapus
     })),
   };
+  // ====================================================================
+  // ▲▲▲ BATAS AKHIR PERBAIKAN ▲▲▲
+  // ====================================================================
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold mb-6">Edit Pendaftaran HKI</h1>
+    <div className="container mx-auto py-10">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold">Edit Pendaftaran Hak Cipta</h1>
+        <p className="text-muted-foreground">
+          Perbarui detail pendaftaran Anda di bawah ini.
+        </p>
+      </div>
       <PendaftaranBaruForm
         initialData={formInitialData}
         pendaftaranId={pendaftaran.id}

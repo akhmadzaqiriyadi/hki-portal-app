@@ -17,12 +17,12 @@ const badgeVariants = cva(
           "border-transparent bg-destructive text-white [a&]:hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
         outline:
           "text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground",
-
-        // ✅ Tambahan baru
         warning:
           "border-transparent bg-yellow-400 text-yellow-950 [a&]:hover:bg-yellow-300",
         success:
           "border-transparent bg-green-500 text-white [a&]:hover:bg-green-400",
+        info:
+          "border-transparent bg-blue-500 text-white [a&]:hover:bg-blue-400",
       },
     },
     defaultVariants: {

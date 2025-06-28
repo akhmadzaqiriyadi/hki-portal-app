@@ -20,10 +20,16 @@ import type { StatusPendaftaran } from "@/lib/types";
 // Helper untuk Badge Status
 const getStatusVariant = (status: StatusPendaftaran) => {
   switch (status) {
-    case "approved": return "success";
-    case "revisi": return "destructive";
-    case "submitted": return "warning";
-    default: return "secondary";
+    case "approved":
+      return "success";
+    case "diproses_hki":
+      return "info";
+    case "revisi":
+      return "destructive";
+    case "submitted":
+      return "warning";
+    default:
+      return "secondary";
   }
 };
 

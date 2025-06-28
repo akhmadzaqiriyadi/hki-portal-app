@@ -23,6 +23,8 @@ export type FormState = {
 
 const PendaftaranBaruSchema = z.object({
   // Informasi Karya
+  jenis_pemilik: z.string().min(1, "Jenis pemilik wajib dipilih."),
+  scan_ktp_kolektif_url: z.string().optional(),
   judul: z.string().min(5, "Judul karya wajib diisi."),
   produk_hasil: z.string().optional(),
   jenis_karya: z.string().min(1, "Jenis karya harus dipilih."),

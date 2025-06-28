@@ -6,13 +6,6 @@ import {
   Eye,
   CheckCircle,
   AlertCircle,
-  Book,
-  Music,
-  Camera,
-  Video,
-  Palette,
-  Code,
-  Globe,
   X,
   ChevronDown,
   ChevronUp,
@@ -26,6 +19,9 @@ import { Document, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
 
+// Import the copyrightCategories from the master file
+import { copyrightCategories } from "@/lib/master/copyrightCategories";
+
 pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.js";
 
 const HakCiptaPage = () => {
@@ -33,14 +29,14 @@ const HakCiptaPage = () => {
   const [activePdfPath, setActivePdfPath] = useState<string | null>(null);
   const [isObjectSectionVisible, setIsObjectSectionVisible] = useState(true);
   const router = useRouter();
-  
+
   const pdfContainerRef = useRef<HTMLDivElement>(null);
   const [pdfWidth, setPdfWidth] = useState(0);
   const [numPages, setNumPages] = useState<number | null>(null);
 
   useEffect(() => {
     const container = pdfContainerRef.current;
-    
+
     if (showPdfViewer && container) {
       const observer = new ResizeObserver(() => {
         setPdfWidth(container.clientWidth);
@@ -65,111 +61,8 @@ const HakCiptaPage = () => {
     router.push("/login");
   };
 
-  const copyrightCategories = {
-    KARYA_TULIS: {
-      icon: Book,
-      color: "bg-red-500",
-      label: "KARYA TULIS",
-      shortLabel: "TULIS",
-      subCategories: [
-        "Atlas",
-        "Biografi",
-        "Booklet",
-        "Buku",
-        "Buku Mewarnai",
-        "Buku Panduan/Petunjuk",
-        "Buku Pelajaran",
-        "Buku Saku",
-        "Bunga Rampai",
-        "Cerita Bergambar",
-      ],
-    },
-    KARYA_SENI: {
-      icon: Palette,
-      color: "bg-blue-500",
-      label: "KARYA SENI",
-      shortLabel: "SENI",
-      subCategories: [
-        "Diktat",
-        "Dongeng",
-        "e-Book",
-        "Ensiklopedia",
-        "Jurnal",
-        "Kamus",
-        "Karya Ilmiah",
-        "Karya Tulis",
-        "Karya Tulis (Artikel)",
-        "Karya Tulis (Disertasi)",
-      ],
-    },
-    KOMPOSISI_MUSIK: {
-      icon: Music,
-      color: "bg-purple-500",
-      label: "KOMPOSISI MUSIK",
-      shortLabel: "MUSIK",
-      subCategories: [
-        "Karya Tulis (Skripsi)",
-        "Karya Tulis (Tesis)",
-        "Karya Tulis Lainnya",
-        "Komik",
-        "Laporan Penelitian",
-        "Majalah",
-        "Makalah",
-        "Modul",
-      ],
-    },
-    KARYA_AUDIO_VISUAL: {
-      icon: Video,
-      color: "bg-green-500",
-      label: "KARYA AUDIO VISUAL",
-      shortLabel: "A/V",
-      subCategories: [
-        "Naskah Drama/Pertunjukan",
-        "Naskah Film",
-        "Naskah Karya Siaran",
-        "Naskah Karya Sinematografi",
-        "Novel",
-        "Perwajahan Karya Tulis",
-        "Proposal Penelitian",
-        "Puisi",
-      ],
-    },
-    KARYA_FOTOGRAFI: {
-      icon: Camera,
-      color: "bg-yellow-500",
-      label: "KARYA FOTOGRAFI",
-      shortLabel: "FOTO",
-      subCategories: ["Resensi", "Resume/Ringkasan", "Saduran", "Sinopsis"],
-    },
-    KARYA_DRAMA: {
-      icon: Globe,
-      color: "bg-indigo-500",
-      label: "KARYA DRAMA & KOREOGRAFI", // Sedikit diringkas dengan '&'
-      shortLabel: "DRAMA",
-      subCategories: [],
-    },
-    KARYA_REKAMAN: {
-      icon: FileText,
-      color: "bg-pink-500",
-      label: "KARYA REKAMAN",
-      shortLabel: "REKAM",
-      subCategories: [],
-    },
-    KARYA_LAINNYA: {
-      icon: Code,
-      color: "bg-orange-500",
-      label: "KARYA LAINNYA",
-      shortLabel: "LAIN",
-      subCategories: [
-        "Tafsir",
-        "Terjemahan",
-        "Basis Data",
-        "Kompilasi Ciptaan/Data",
-        "Permainan Video",
-        "Program Komputer",
-      ],
-    },
-  };
+  // Remove the local definition of copyrightCategories here
+  // as you are now importing it from the master file.
 
   const adminSteps = [
     {
@@ -321,7 +214,11 @@ const HakCiptaPage = () => {
                     })}
                   </TabsList>
                   {Object.entries(copyrightCategories).map(([key, data]) => (
-                    <TabsContent key={key} value={key} className="mt-4 sm:mt-6">
+                    <TabsContent
+                      key={key}
+                      value={key}
+                      className="mt-4 sm:mt-6"
+                    >
                       <div className="bg-slate-50 rounded-xl p-4 sm:p-6">
                         <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
                           <div
@@ -368,7 +265,7 @@ const HakCiptaPage = () => {
 
           {/* Section B: Berkas Administrasi */}
           <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-8 mb-4 sm:mb-8">
-             {/* [RESPONSIVE FIX] Bagian Judul Seksi */}
+            {/* [RESPONSIVE FIX] Bagian Judul Seksi */}
             <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
               <div className="w-7 h-7 sm:w-8 sm:h-8 bg-blue-800 text-white rounded-lg flex items-center justify-center flex-shrink-0 font-bold text-base">
                 B
@@ -438,7 +335,7 @@ const HakCiptaPage = () => {
 
           {/* Section C: Biaya Pencatatan */}
           <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-8 mb-4 sm:mb-8">
-             {/* [RESPONSIVE FIX] Bagian Judul Seksi */}
+            {/* [RESPONSIVE FIX] Bagian Judul Seksi */}
             <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
               <div className="w-7 h-7 sm:w-8 sm:h-8 bg-blue-800 text-white rounded-lg flex items-center justify-center flex-shrink-0 font-bold text-base">
                 C
@@ -533,7 +430,10 @@ const HakCiptaPage = () => {
                 </button>
               </div>
 
-              <div ref={pdfContainerRef} className="flex-1 p-4 sm:p-6 overflow-auto bg-slate-100">
+              <div
+                ref={pdfContainerRef}
+                className="flex-1 p-4 sm:p-6 overflow-auto bg-slate-100"
+              >
                 <Document
                   file={activePdfPath}
                   onLoadSuccess={onDocumentLoadSuccess}
@@ -547,18 +447,20 @@ const HakCiptaPage = () => {
                   }
                   error={
                     <div className="text-center text-red-600">
-                      Gagal memuat PDF. Pastikan file tersedia di path: {activePdfPath}
+                      Gagal memuat PDF. Pastikan file tersedia di path:{" "}
+                      {activePdfPath}
                     </div>
                   }
                 >
-                  {pdfWidth > 0 && Array.from(new Array(numPages || 0), (el, index) => (
-                    <Page
-                      key={`page_${index + 1}`}
-                      pageNumber={index + 1}
-                      width={pdfWidth}
-                      className="mb-4 shadow-md"
-                    />
-                  ))}
+                  {pdfWidth > 0 &&
+                    Array.from(new Array(numPages || 0), (el, index) => (
+                      <Page
+                        key={`page_${index + 1}`}
+                        pageNumber={index + 1}
+                        width={pdfWidth}
+                        className="mb-4 shadow-md"
+                      />
+                    ))}
                 </Document>
               </div>
 

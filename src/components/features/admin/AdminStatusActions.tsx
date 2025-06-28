@@ -16,19 +16,33 @@ interface AdminStatusActionsProps {
   currentStatus: StatusPendaftaran;
 }
 
-const statusOptions: StatusPendaftaran[] = ["submitted", "review", "revisi", "approved", "rejected"];
+// ✨ REKOMENDASI: Ubah menjadi array of object untuk label yang lebih baik
+const statusOptions: { value: StatusPendaftaran; label: string }[] = [
+  { value: "submitted", label: "Submitted" },
+  { value: "review", label: "Review" },
+  { value: "revisi", label: "Revisi" },
+  { value: "diproses_hki", label: "Diproses (HKI)" }, // <-- Status baru ditambahkan
+  { value: "approved", label: "Approved" },
+  { value: "rejected", label: "Rejected" }
+];
+
+// Pastikan semua status ada di sini kecuali 'draft' yang mungkin tidak bisa di-set oleh admin
+const availableStatus = statusOptions.map(s => s.value);
 
 export function AdminStatusActions({ pendaftaranId, currentStatus }: AdminStatusActionsProps) {
-  const [selectedStatus, setSelectedStatus] = useState<StatusPendaftaran>(currentStatus);
+  // Menangani kasus jika status saat ini tidak ada di options (misal: 'draft')
+  const initialStatus = availableStatus.includes(currentStatus) ? currentStatus : undefined;
+  const [selectedStatus, setSelectedStatus] = useState<StatusPendaftaran | undefined>(initialStatus);
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
   const handleStatusUpdate = () => {
+    if (!selectedStatus) return;
+
     startTransition(async () => {
       const result = await updateRegistrationStatus(pendaftaranId, selectedStatus);
       if (result.success) {
         toast.success("Status berhasil diperbarui!");
-        // Refresh halaman untuk melihat perubahan
         router.refresh();
       } else {
         toast.error("Gagal memperbarui status.", { description: result.message });
@@ -49,14 +63,15 @@ export function AdminStatusActions({ pendaftaranId, currentStatus }: AdminStatus
               <SelectValue placeholder="Pilih status..." />
             </SelectTrigger>
             <SelectContent>
-              {statusOptions.map(status => (
-                <SelectItem key={status} value={status} className="capitalize">
-                  {status}
+              {/* ✨ Mapping menggunakan object baru */}
+              {statusOptions.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
-          <Button onClick={handleStatusUpdate} disabled={isPending || selectedStatus === currentStatus}>
+          <Button onClick={handleStatusUpdate} disabled={isPending || !selectedStatus || selectedStatus === currentStatus}>
             {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Simpan Perubahan
           </Button>

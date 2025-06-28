@@ -56,14 +56,14 @@ export default function Header({ onLogin, onRegister }: HeaderProps) {
                 className="block px-4 py-2 text-sm text-slate-600 hover:text-blue-800 hover:bg-slate-50 transition-colors"
                 onClick={handleDropdownClose}
               >
-                PATEN
+                PATEN (coming soon)
               </a>
               <a
                 href="#desain-industri"
                 className="block px-4 py-2 text-sm text-slate-600 hover:text-blue-800 hover:bg-slate-50 transition-colors"
                 onClick={handleDropdownClose}
               >
-                DESAIN INDUSTRI
+                DESAIN INDUSTRI (coming soon)
               </a>
             </div>
           )}

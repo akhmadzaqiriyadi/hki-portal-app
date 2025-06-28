@@ -21,14 +21,21 @@ import {
 } from "lucide-react";
 import type { StatusPendaftaran } from "@/lib/types";
 import { FinalizeButton } from "@/components/features/pendaftaran/FinalizeButton";
+import { copyrightCategories } from "@/lib/master/copyrightCategories";
 
 // Helper untuk Badge Status
 const getStatusVariant = (status: StatusPendaftaran) => {
   switch (status) {
-    case "approved": return "success";
-    case "revisi": return "destructive";
-    case "submitted": return "warning";
-    default: return "secondary";
+    case "approved":
+      return "success";
+    case "diproses_hki":
+      return "info";
+    case "revisi":
+      return "destructive";
+    case "submitted":
+      return "warning";
+    default:
+      return "secondary";
   }
 };
 
@@ -86,7 +93,7 @@ function FilePreviewLink({
             className="text-sm truncate max-w-[200px]"
             title={url.split("/").pop()?.split("_").slice(1).join("_")}
           >
-            {url.split("/").pop()?.split("_").slice(1).join("_")}
+            {url.split("/").pop()?.split("_").slice(1).join("_") || "file"}
           </span>
         </div>
         <Button asChild variant="outline" size="sm">
@@ -100,8 +107,8 @@ function FilePreviewLink({
           <Image
             src={url}
             alt={`Preview ${label}`}
-            layout="fill"
-            objectFit="contain"
+            fill
+            style={{ objectFit: "contain" }}
           />
         </div>
       )}
@@ -109,7 +116,6 @@ function FilePreviewLink({
   );
 }
 
-// ✅ PERBAIKAN: Definisi props yang benar untuk Next.js 15
 interface DetailPendaftaranPageProps {
   params: Promise<{ id: string }>;
 }
@@ -117,10 +123,7 @@ interface DetailPendaftaranPageProps {
 export default async function DetailPendaftaranPage({
   params,
 }: DetailPendaftaranPageProps) {
-  // Await params untuk mendapatkan nilai id
   const { id } = await params;
-
-  // Gunakan 'id' yang sudah di-await untuk mengambil data
   const { data: pendaftaran, error } = await getRegistrationById(id);
 
   if (error || !pendaftaran) {
@@ -128,6 +131,7 @@ export default async function DetailPendaftaranPage({
   }
 
   const isDraft = pendaftaran.status === "draft";
+  const jenisKaryaLabel = copyrightCategories[pendaftaran.jenis_karya]?.label || pendaftaran.jenis_karya;
 
   return (
     <div className="space-y-6">
@@ -176,8 +180,9 @@ export default async function DetailPendaftaranPage({
         </CardHeader>
         <CardContent>
           <dl className="space-y-1">
+            <DetailItem label="Jenis Pemilik" value={pendaftaran.jenis_pemilik} />
             <DetailItem label="Produk Hasil" value={pendaftaran.produk_hasil} />
-            <DetailItem label="Jenis Karya" value={pendaftaran.jenis_karya} />
+            <DetailItem label="Jenis Karya" value={jenisKaryaLabel} />
             <DetailItem
               label="Sub-Jenis Karya"
               value={pendaftaran.sub_jenis_karya}
@@ -214,33 +219,38 @@ export default async function DetailPendaftaranPage({
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
-          {pendaftaran.pencipta.map((p: any, index: number) => (
-            <div
-              key={p.id}
-              className="border p-4 rounded-lg bg-muted/20 space-y-4"
-            >
-              <h3 className="font-semibold text-lg">Pencipta {index + 1}</h3>
-              <dl className="space-y-1">
-                <DetailItem label="Nama Lengkap" value={p.nama_lengkap} />
-                <DetailItem label="NIK" value={p.nik} />
-                <DetailItem label="NIP / NIM" value={p.nip_nim} />
-                <DetailItem label="Email" value={p.email} />
-                <DetailItem label="No. HP" value={p.no_hp} />
-                <DetailItem label="Jenis Kelamin" value={p.jenis_kelamin} />
-                <DetailItem label="Fakultas" value={p.fakultas} />
-                <DetailItem label="Program Studi" value={p.program_studi} />
-                <DetailItem label="Alamat" value={p.alamat_lengkap} />
-                <DetailItem label="Kewarganegaraan" value={p.kewarganegaraan} />
-              </dl>
-              {/* ✅ TAMBAHAN: Menampilkan preview Scan KTP untuk setiap pencipta */}
-              <div className="pt-4 border-t">
-                <FilePreviewLink
-                  url={p.scan_ktp_url}
-                  label="Scan KTP Pencipta"
-                />
+          {pendaftaran.pencipta.map((p: any, index: number) => {
+            
+            const alamatLengkap = [
+              p.alamat_lengkap,
+              p.kelurahan,
+              p.kecamatan,
+              p.kota,
+              p.provinsi,
+            ].filter(Boolean).join(", ");
+
+            return (
+              <div
+                key={p.nik || index}
+                className="border p-4 rounded-lg bg-muted/20 space-y-4"
+              >
+                <h3 className="font-semibold text-lg">Pencipta {index + 1}</h3>
+                <dl className="space-y-1">
+                  <DetailItem label="Nama Lengkap" value={p.nama_lengkap} />
+                  <DetailItem label="NIK" value={p.nik} />
+                  <DetailItem label="NIP / NIM" value={p.nip_nim} />
+                  <DetailItem label="Email" value={p.email} />
+                  <DetailItem label="No. HP" value={p.no_hp} />
+                  <DetailItem label="Jenis Kelamin" value={p.jenis_kelamin} />
+                  <DetailItem label="Fakultas" value={p.fakultas} />
+                  <DetailItem label="Program Studi" value={p.program_studi} />
+                  <DetailItem label="Alamat Lengkap" value={alamatLengkap} />
+                  <DetailItem label="Kode Pos" value={p.kode_pos} />
+                  <DetailItem label="Kewarganegaraan" value={p.kewarganegaraan} />
+                </dl>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </CardContent>
       </Card>
 
@@ -253,6 +263,10 @@ export default async function DetailPendaftaranPage({
         </CardHeader>
         <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
           <FilePreviewLink
+            url={pendaftaran.scan_ktp_kolektif_url}
+            label="Scan KTP (Kolektif)"
+          />
+          <FilePreviewLink
             url={pendaftaran.lampiran_karya_url}
             label="Lampiran Contoh Karya"
           />
@@ -264,10 +278,12 @@ export default async function DetailPendaftaranPage({
             url={pendaftaran.surat_pernyataan_url}
             label="Surat Pernyataan"
           />
-          <FilePreviewLink
-            url={pendaftaran.surat_pengalihan_url}
-            label="Surat Pengalihan Hak"
-          />
+          {pendaftaran.surat_pengalihan_url && (
+            <FilePreviewLink
+              url={pendaftaran.surat_pengalihan_url}
+              label="Surat Pengalihan Hak"
+            />
+          )}
         </CardContent>
       </Card>
     </div>

@@ -9,6 +9,7 @@ export type StatusPendaftaran =
   | "submitted"
   | "review"
   | "revisi"
+  | 'diproses_hki'
   | "approved"
   | "rejected";
 
