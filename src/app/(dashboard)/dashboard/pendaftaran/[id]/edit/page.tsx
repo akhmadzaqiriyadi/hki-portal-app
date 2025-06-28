@@ -5,13 +5,13 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 import type { Pencipta } from "@/lib/types";
 
-// ✅ PERBAIKAN: Gunakan `params` langsung seperti biasa di Server Component
+// ✅ PERBAIKAN: Gunakan `await params` untuk Next.js 15+
 export default async function EditPendaftaranPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const { id } = params;
+  const { id } = await params;
 
   // PENTING: Pastikan fungsi ini melakukan SELECT pada semua kolom yang dibutuhkan!
   const { data: pendaftaran, error } = await getRegistrationById(id);
