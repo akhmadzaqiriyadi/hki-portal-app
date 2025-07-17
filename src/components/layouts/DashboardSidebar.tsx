@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { LayoutDashboard, Files, Users, LogOut, CheckCircle, GraduationCap } from "lucide-react";
+import { LayoutDashboard, Files, Users, LogOut, CheckCircle, GraduationCap, BarChart3 } from "lucide-react";
 import { logout } from "@/lib/supabase/actions";
 
 const userNavLinks = [
@@ -16,7 +16,19 @@ const userNavLinks = [
   },
   {
     href: "/dashboard/pendaftaran",
-    label: "Pendaftaran",
+    label: "Pendaftaran HAK CIPTA",
+    icon: Files,
+    exact: false,
+  },
+  {
+    href: "#paten",
+    label: "PATEN (coming soon)",
+    icon: Files,
+    exact: false,
+  },
+  {
+    href: "#desain-industri",
+    label: "DESAIN INDUSTRI (coming soon)",
     icon: Files,
     exact: false,
   },
@@ -34,6 +46,12 @@ const adminNavLinks = [
     label: "Verifikasi Pendaftaran",
     icon: Files,
     exact: false,
+  },
+  {
+    href: "/admin/analytics",
+    label: "Analytics HKI",
+    icon: BarChart3,
+    exact: true,
   },
   {
     href: "/admin/users",

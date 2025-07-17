@@ -673,3 +673,176 @@ export async function getRegistrationByIdForAdmin(pendaftaranId: string) {
     return { data: null, error: { message: error.message } };
   }
 }
+
+//================================================================
+// SERTIFIKAT HKI ACTIONS
+//================================================================
+
+/**
+ * Upload sertifikat HKI oleh admin setelah pendaftaran disetujui
+ */
+export async function uploadSertifikatHKI(
+  pendaftaranId: string,
+  file: File
+): Promise<{ success: boolean; message: string; data?: any }> {
+  try {
+    // Check admin privileges
+    const adminUser = await checkAdmin();
+    const supabase = await createAdminClient();
+
+    // Validasi file
+    if (!file) {
+      return { success: false, message: "File sertifikat diperlukan" };
+    }
+
+    // Validasi tipe file (hanya PDF)
+    if (file.type !== 'application/pdf') {
+      return { success: false, message: "File harus berformat PDF" };
+    }
+
+    // Validasi ukuran file (maksimal 10MB)
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    if (file.size > maxSize) {
+      return { success: false, message: "Ukuran file tidak boleh lebih dari 10MB" };
+    }
+
+    // Cek apakah pendaftaran sudah approved
+    const { data: pendaftaran, error: checkError } = await supabase
+      .from('pendaftaran')
+      .select('status, judul')
+      .eq('id', pendaftaranId)
+      .single();
+
+    if (checkError) {
+      return { success: false, message: "Pendaftaran tidak ditemukan" };
+    }
+
+    if (pendaftaran.status !== 'approved') {
+      return { success: false, message: "Sertifikat hanya dapat diupload untuk pendaftaran yang sudah disetujui" };
+    }
+
+    // Generate unique filename
+    const timestamp = Date.now();
+    const sanitizedTitle = pendaftaran.judul.replace(/[^a-zA-Z0-9]/g, '_').toLowerCase();
+    const fileName = `sertifikat_${sanitizedTitle}_${timestamp}.pdf`;
+    const filePath = `sertifikat-hki/${pendaftaranId}/${fileName}`;
+
+    // Upload file ke Supabase Storage menggunakan bucket yang sama dengan dokumen lain
+    const { error: uploadError } = await supabase.storage
+      .from('dokumen-hki') // Menggunakan bucket yang sama dengan upload dokumen lainnya
+      .upload(filePath, file, {
+        cacheControl: '3600',
+        upsert: false
+      });
+
+    if (uploadError) {
+      console.error('Upload error:', uploadError);
+      return { success: false, message: "Gagal mengupload file: " + uploadError.message };
+    }
+
+    // Get public URL
+    const { data: { publicUrl } } = supabase.storage
+      .from('dokumen-hki')
+      .getPublicUrl(filePath);
+
+    // Update database dengan informasi sertifikat
+    const { data: updateData, error: updateError } = await supabase
+      .from('pendaftaran')
+      .update({
+        sertifikat_hki_url: publicUrl,
+        sertifikat_hki_filename: file.name,
+        sertifikat_uploaded_at: new Date().toISOString(),
+        sertifikat_uploaded_by: adminUser.id
+      })
+      .eq('id', pendaftaranId)
+      .select()
+      .single();
+
+    if (updateError) {
+      // Jika update database gagal, hapus file yang sudah diupload
+      await supabase.storage
+        .from('dokumen-hki')
+        .remove([filePath]);
+      
+      return { success: false, message: "Gagal menyimpan informasi sertifikat: " + updateError.message };
+    }
+
+    return { 
+      success: true, 
+      message: "Sertifikat HKI berhasil diupload", 
+      data: updateData 
+    };
+
+  } catch (error) {
+    console.error('Error uploading sertifikat:', error);
+    return { 
+      success: false, 
+      message: error instanceof Error ? error.message : "Terjadi kesalahan yang tidak diketahui" 
+    };
+  }
+}
+
+/**
+ * Delete sertifikat HKI (jika admin perlu mengganti)
+ */
+export async function deleteSertifikatHKI(
+  pendaftaranId: string
+): Promise<{ success: boolean; message: string }> {
+  try {
+    // Check admin privileges
+    await checkAdmin();
+    const supabase = await createAdminClient();
+
+    // Get current sertifikat info
+    const { data: pendaftaran, error: fetchError } = await supabase
+      .from('pendaftaran')
+      .select('sertifikat_hki_url')
+      .eq('id', pendaftaranId)
+      .single();
+
+    if (fetchError) {
+      return { success: false, message: "Pendaftaran tidak ditemukan" };
+    }
+
+    if (!pendaftaran.sertifikat_hki_url) {
+      return { success: false, message: "Tidak ada sertifikat yang perlu dihapus" };
+    }
+
+    // Extract file path from URL
+    const url = new URL(pendaftaran.sertifikat_hki_url);
+    const filePath = url.pathname.split('/dokumen-hki/')[1]; // Update sesuai bucket yang benar
+
+    // Delete file from storage
+    const { error: deleteError } = await supabase.storage
+      .from('dokumen-hki') // Menggunakan bucket yang sama
+      .remove([filePath]);
+
+    if (deleteError) {
+      console.error('Storage delete error:', deleteError);
+    }
+
+    // Update database to remove sertifikat info
+    const { error: updateError } = await supabase
+      .from('pendaftaran')
+      .update({
+        sertifikat_hki_url: null,
+        sertifikat_hki_filename: null,
+        sertifikat_uploaded_at: null,
+        sertifikat_uploaded_by: null
+      })
+      .eq('id', pendaftaranId);
+
+    if (updateError) {
+      return { success: false, message: "Gagal menghapus informasi sertifikat: " + updateError.message };
+    }
+
+    return { success: true, message: "Sertifikat berhasil dihapus" };
+
+  } catch (error) {
+    console.error('Error deleting sertifikat:', error);
+    return { 
+      success: false, 
+      message: error instanceof Error ? error.message : "Terjadi kesalahan yang tidak diketahui" 
+    };
+  }
+}

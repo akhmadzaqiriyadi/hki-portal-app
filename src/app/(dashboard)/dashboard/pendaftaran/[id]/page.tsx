@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import type { StatusPendaftaran } from "@/lib/types";
 import { FinalizeButton } from "@/components/features/pendaftaran/FinalizeButton";
+import { SertifikatView } from "@/components/features/pendaftaran/SertifikatView";
 import { copyrightCategories } from "@/lib/master/copyrightCategories";
 
 // Helper untuk Badge Status
@@ -326,6 +327,16 @@ export default async function DetailPendaftaranPage({
           )}
         </CardContent>
       </Card>
+
+      {/* --- Sertifikat HKI --- */}
+      <SertifikatView
+        sertifikat={{
+          url: pendaftaran.sertifikat_hki_url || null,
+          filename: pendaftaran.sertifikat_hki_filename || null,
+          uploadedAt: pendaftaran.sertifikat_uploaded_at || null
+        }}
+        pendaftaranStatus={pendaftaran.status}
+      />
     </div>
   );
 }

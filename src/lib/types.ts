@@ -75,6 +75,10 @@ export interface Pendaftaran {
   created_at: string; // timestamptz
   updated_at: string; // timestamptz
   catatan_revisi?: string | null;
+  sertifikat_hki_url?: string | null;
+  sertifikat_hki_filename?: string | null;
+  sertifikat_uploaded_at?: string | null;
+  sertifikat_uploaded_by?: string | null;
 }
 
 /**

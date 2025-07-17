@@ -1,0 +1,68 @@
+/* Tambahan CSS untuk animasi upload dan komponen sertifikat */
+
+/* Animation delay utilities */
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+
+.animation-delay-4000 {
+  animation-delay: 4s;
+}
+
+/* Upload progress animations */
+.upload-progress {
+  @apply relative overflow-hidden;
+}
+
+.upload-progress::after {
+  content: '';
+  @apply absolute top-0 left-0 h-full bg-gradient-to-r from-transparent via-white/20 to-transparent;
+  width: 30%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(300%);
+  }
+}
+
+/* Certificate badge animations */
+.certificate-badge {
+  @apply transition-all duration-300 ease-in-out;
+}
+
+.certificate-badge:hover {
+  @apply scale-105 shadow-lg;
+}
+
+/* File upload drag and drop styles */
+.file-upload-zone {
+  @apply transition-all duration-200 ease-in-out;
+  @apply border-2 border-dashed border-slate-300;
+  @apply hover:border-blue-400 hover:bg-blue-50/50;
+}
+
+.file-upload-zone.dragover {
+  @apply border-blue-500 bg-blue-100/50;
+  @apply transform scale-[1.02];
+}
+
+/* Success animation for uploaded files */
+.upload-success {
+  animation: slideInUp 0.5s ease-out;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

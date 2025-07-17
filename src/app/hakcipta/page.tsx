@@ -350,26 +350,6 @@ const HakCiptaPage = () => {
               atas pelibagai kepentingan. Oleh karena itu, Sentra HKI perlu
               membuat peraturan yang dapat dipahami bersama.
             </p>
-            <div className="space-y-3 sm:space-y-4 mb-4 sm:mb-6">
-              <div className="flex items-center gap-2">
-                <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 text-green-600 flex-shrink-0" />
-                <span className="text-xs sm:text-sm text-slate-700">
-                  Pengaturan Subsidi <strong>lihat</strong>
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 text-green-600 flex-shrink-0" />
-                <span className="text-xs sm:text-sm text-slate-700">
-                  Ketersediaan Subsidi <strong>lihat</strong>
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 text-green-600 flex-shrink-0" />
-                <span className="text-xs sm:text-sm text-slate-700">
-                  Template Surat rekomendasi Program Studi <strong>unduh</strong>
-                </span>
-              </div>
-            </div>
             <div className="overflow-x-auto">
               <table className="w-full border-collapse border border-slate-300 text-xs sm:text-sm">
                 <thead>

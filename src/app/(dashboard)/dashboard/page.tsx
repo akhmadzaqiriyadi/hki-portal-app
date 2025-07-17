@@ -1,3 +1,5 @@
+// src/app/(dashboard)/dashboard/page.tsx
+
 import Link from "next/link";
 import { getMyRegistrations } from "@/lib/supabase/actions";
 import { Badge } from "@/components/ui/badge";
@@ -32,6 +34,10 @@ import {
 } from "lucide-react";
 import type { StatusPendaftaran } from "@/lib/types";
 
+// --- Import Komponen Analitik Baru ---
+import { HKIAnalyticsCards } from "@/components/features/analytics/HKIAnalyticsCards";
+
+
 /**
  * Helper untuk memberikan warna pada Badge Status
  */
@@ -39,7 +45,7 @@ const getStatusVariant = (status: StatusPendaftaran) => {
   switch (status) {
     case "approved":
       return "success";
-    case "diproses_hki":
+    case "diproses_hki": // Pastikan status ini ada di type StatusPendaftaran Anda
       return "info";
     case "revisi":
       return "destructive";
@@ -202,6 +208,15 @@ export default async function DashboardPage() {
             </CardContent>
           </Card>
         </div>
+
+        {/* --- Bagian Analitik Baru --- */}
+        <div className="space-y-4">
+            <h2 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-900 via-blue-800 to-slate-700 bg-clip-text text-transparent">
+                Statistik & Analitik HKI
+            </h2>
+            <HKIAnalyticsCards /> {/* Menggunakan komponen analitik baru */}
+        </div>
+
 
         {/* Quick Actions */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
