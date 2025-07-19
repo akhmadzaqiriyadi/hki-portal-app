@@ -5,7 +5,7 @@ export default function Footer() {
   return (
     <footer className="bg-slate-50 border-t border-slate-200">
       <div className="container px-4 md:px-6 mx-auto py-12">
-        <div className="grid md:grid-cols-4 gap-8">
+        <div className="grid md:grid-cols-3 gap-8">
           <div className="space-y-4">
             <div className="flex items-center">
               <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-blue-900 to-blue-800">
@@ -35,16 +35,6 @@ export default function Footer() {
               <li><a href="#" className="hover:text-blue-800 transition-colors">Tim</a></li>
               <li><a href="#" className="hover:text-blue-800 transition-colors">Program</a></li>
               <li><a href="#" className="hover:text-blue-800 transition-colors">Kontak</a></li>
-            </ul>
-          </div>
-          
-          <div>
-            <h3 className="font-semibold text-slate-900 mb-4">Dukungan</h3>
-            <ul className="space-y-2 text-slate-600">
-              <li><a href="#" className="hover:text-blue-800 transition-colors">Panduan HKI</a></li>
-              <li><a href="#" className="hover:text-blue-800 transition-colors">FAQ</a></li>
-              <li><a href="#" className="hover:text-blue-800 transition-colors">Dokumentasi</a></li>
-              <li><a href="#" className="hover:text-blue-800 transition-colors">Konsultasi</a></li>
             </ul>
           </div>
         </div>

@@ -2,6 +2,7 @@
 import React from 'react';
 import { Menu, X, ChevronDown } from "lucide-react";
 import Image from 'next/image';
+import Link from 'next/link';
 
 type HeaderProps = {
   onLogin: () => void;
@@ -20,14 +21,21 @@ export default function Header({ onLogin, onRegister }: HeaderProps) {
     setIsDropdownOpen(false);
   };
 
+  const closeMobileMenu = () => {
+    setIsMenuOpen(false);
+    setIsDropdownOpen(false);
+  }
+
   return (
     <header className="sticky top-0 z-50 px-4 lg:px-28 h-16 flex items-center backdrop-blur-md bg-white/90 border-b border-slate-200/60 shadow-sm">
       <div className="flex items-center justify-center gap-x-2">
-        <Image src="/UTY.png" alt="Logo" width={42} height={42} />
-        <Image src="/PrimaryLogo.png" alt="Logo" width={40} height={40} />
-        <span className="ml-2 font-bold text-xl bg-gradient-to-r from-blue-900 to-blue-800 bg-clip-text text-transparent">
-           Portal UTY HKI
-        </span>
+        <Link href="/" className="flex items-center gap-x-2">
+          <Image src="/UTY.png" alt="Logo" width={42} height={42} />
+          <Image src="/PrimaryLogo.png" alt="Logo" width={40} height={40} />
+          <span className="ml-2 font-bold text-xl bg-gradient-to-r from-blue-900 to-blue-800 bg-clip-text text-transparent">
+            Portal UTY HKI
+          </span>
+        </Link>
       </div>
       
       {/* Desktop Navigation */}
@@ -72,9 +80,6 @@ export default function Header({ onLogin, onRegister }: HeaderProps) {
         <a href="#fitur" className="text-sm font-medium text-slate-600 hover:text-blue-800 transition-colors">
           Fitur
         </a>
-        <a href="#tentang" className="text-sm font-medium text-slate-600 hover:text-blue-800 transition-colors">
-          Tentang
-        </a>
         <button onClick={onLogin} className="text-sm font-medium text-slate-600 hover:text-blue-800 transition-colors">
           Masuk
         </button>
@@ -109,17 +114,16 @@ export default function Header({ onLogin, onRegister }: HeaderProps) {
               </button>
               {isDropdownOpen && (
                 <div className="ml-4 mt-2 space-y-2">
-                  <a href="hakcipta" className="block text-sm text-slate-500 hover:text-blue-800">HAK CIPTA</a>
-                  <a href="#paten" className="block text-sm text-slate-500 hover:text-blue-800">PATEN</a>
-                  <a href="#desain-industri" className="block text-sm text-slate-500 hover:text-blue-800">DESAIN INDUSTRI</a>
+                  <a href="/hakcipta" onClick={closeMobileMenu} className="block py-1 text-sm text-slate-500 hover:text-blue-800">HAK CIPTA</a>
+                  <a href="#paten" onClick={closeMobileMenu} className="block py-1 text-sm text-slate-500 hover:text-blue-800">PATEN (coming soon)</a>
+                  <a href="#desain-industri" onClick={closeMobileMenu} className="block py-1 text-sm text-slate-500 hover:text-blue-800">DESAIN INDUSTRI (coming soon)</a>
                 </div>
               )}
             </div>
             
-            <a href="#fitur" className="text-sm font-medium text-slate-600 hover:text-blue-800">Fitur</a>
-            <a href="#tentang" className="text-sm font-medium text-slate-600 hover:text-blue-800">Tentang</a>
-            <button onClick={onLogin} className="text-sm font-medium text-slate-600 hover:text-blue-800 text-left">Masuk</button>
-            <button onClick={onRegister} className="bg-gradient-to-r from-blue-900 to-blue-800 text-white px-4 py-2 rounded-xl font-medium w-full">
+            <a href="#fitur" onClick={closeMobileMenu} className="text-sm font-medium text-slate-600 hover:text-blue-800">Fitur</a>
+            <button onClick={() => { onLogin(); closeMobileMenu(); }} className="text-sm font-medium text-slate-600 hover:text-blue-800 text-left">Masuk</button>
+            <button onClick={() => { onRegister(); closeMobileMenu(); }} className="bg-gradient-to-r from-blue-900 to-blue-800 text-white px-4 py-2 rounded-xl font-medium w-full">
               Daftar Sekarang
             </button>
           </nav>

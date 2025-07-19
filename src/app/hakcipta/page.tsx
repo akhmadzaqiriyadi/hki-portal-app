@@ -9,6 +9,7 @@ import {
   X,
   ChevronDown,
   ChevronUp,
+  ExternalLink,
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Header from "@/components/landingpage/HeaderComponent";
@@ -61,41 +62,33 @@ const HakCiptaPage = () => {
     router.push("/login");
   };
 
-  // Remove the local definition of copyrightCategories here
-  // as you are now importing it from the master file.
-
+  // Administrative steps data updated with KTP guide link
   const adminSteps = [
     {
-      title: "Kartu Tanda Penduduk",
+      title: "Kartu Tanda Penduduk (KTP)",
       description:
-        "Kami persiapkan untuk memberikan watermark pada KTP melalui tautan watermarkktp.com. Himpun dalam satu file PDF.",
+        "Lampirkan salinan KTP pemohon dan pencipta. Untuk keamanan, kami sarankan untuk menambahkan watermark. Himpun semua KTP dalam satu file PDF.",
       hasDownload: false,
+      guideLink:
+        "https://drive.google.com/file/d/1mLO8mjlEPyCpUZhWHdBnb0sm3pld0-pg/view?usp=sharing",
+      guideText: "Panduan Watermark KTP",
     },
     {
-      title: "Formulir pencatatan unduh",
+      title: "Surat Pernyataan Pencatatan Hak Cipta",
       description:
-        "Isikan data pada formulir, hingga benar-benar valid. copy-paste data pada formulir ini ke field surat pernyataan dan surat pengalihan. Save dan kirim dengan format word (doc).",
-      hasDownload: true,
-      downloadText: "contoh | unduh",
+        "Isi template surat pernyataan, bubuhkan meterai Rp. 10.000, lalu scan dan simpan dalam format PDF.",
+      hasDownload: false, // Will be handled by the helper documents section
     },
     {
-      title: "Surat pernyataan pencatatan hak cipta",
+      title: "Surat Pengalihan Hak Cipta (jika diperlukan)",
       description:
-        "Copy-paste data valid dari formulir. Bubuhkan meterai 10.000 di kolom tanda tangan Kepala Sentra HKI. Scan dan kirim dengan format PDF.",
-      hasDownload: true,
-      downloadText: "contoh | unduh",
+        "Diisi jika nama pencipta dan pemegang hak cipta berbeda. Tanda tangan tidak dapat diwakilkan. Scan dan simpan dalam format PDF.",
+      hasDownload: false, // Will be handled by the helper documents section
     },
     {
-      title: "Surat pengalihan pencatatan hak cipta",
+      title: "Lampiran Karya Ciptaan",
       description:
-        "Copy-paste data valid dari formulir. Tanda tangan Kepala Sentra HKI dikosongkan. Tanda tangan surat tidak dapat diwakilkan oleh satu orang. Scan dan kirim dengan format PDF.",
-      hasDownload: true,
-      downloadText: "contoh | unduh",
-    },
-    {
-      title: "Lampirkan karya ciptaan yang dapat dicatatkan",
-      description:
-        "Cermat daftar di bawah untuk melihat jenis soft file yang dapat dicatatkan/dilampirkan:",
+        "Sertakan soft file dari karya yang akan dicatatkan. Cermati daftar di bawah untuk melihat jenis file yang sesuai.",
       hasDownload: false,
       hasPdfViewer: true,
     },
@@ -158,7 +151,6 @@ const HakCiptaPage = () => {
           <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg mb-4 sm:mb-8">
             <div className="p-4 sm:p-8 pb-3 sm:pb-4">
               <div className="flex items-center justify-between gap-3">
-                {/* [RESPONSIVE FIX] Bagian Judul Seksi */}
                 <div className="flex items-center gap-2 sm:gap-3">
                   <div className="w-7 h-7 sm:w-8 sm:h-8 bg-blue-800 text-white rounded-lg flex items-center justify-center flex-shrink-0 font-bold text-base">
                     A
@@ -187,12 +179,11 @@ const HakCiptaPage = () => {
                 <p className="text-sm sm:text-base text-slate-600 mb-6 sm:mb-8 leading-relaxed">
                   Penentuan objek jenis ciptaan dapat mempermudah pencipta dalam
                   pengisian dokumen pengajuan. Pilih objek jenis karya lalu
-                  sesuaikan dengan subjenjisnya. Dilarang memberi nama sendiri.
+                  sesuaikan dengan subjenisnya. Dilarang memberi nama sendiri.
                   Cermat daftar di bawah untuk melihat objek jenis dan subjenis
                   ciptaan yang dapat dilindungi.
                 </p>
                 <Tabs defaultValue="KARYA_TULIS" className="w-full">
-                  {/* [RESPONSIVE FIX] Bagian TABS */}
                   <TabsList className="grid w-full grid-cols-3 sm:grid-cols-4 md:grid-cols-2 lg:grid-cols-4 h-auto p-1 bg-slate-100 gap-1">
                     {Object.entries(copyrightCategories).map(([key, data]) => {
                       const IconComponent = data.icon;
@@ -214,11 +205,7 @@ const HakCiptaPage = () => {
                     })}
                   </TabsList>
                   {Object.entries(copyrightCategories).map(([key, data]) => (
-                    <TabsContent
-                      key={key}
-                      value={key}
-                      className="mt-4 sm:mt-6"
-                    >
+                    <TabsContent key={key} value={key} className="mt-4 sm:mt-6">
                       <div className="bg-slate-50 rounded-xl p-4 sm:p-6">
                         <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
                           <div
@@ -265,7 +252,6 @@ const HakCiptaPage = () => {
 
           {/* Section B: Berkas Administrasi */}
           <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-8 mb-4 sm:mb-8">
-            {/* [RESPONSIVE FIX] Bagian Judul Seksi */}
             <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
               <div className="w-7 h-7 sm:w-8 sm:h-8 bg-blue-800 text-white rounded-lg flex items-center justify-center flex-shrink-0 font-bold text-base">
                 B
@@ -278,7 +264,7 @@ const HakCiptaPage = () => {
               {adminSteps.map((step, index) => (
                 <div
                   key={index}
-                  className="border-l-4 border-blue-200 pl-4 sm:pl-6 pb-4 sm:pb-6"
+                  className="border-l-4 border-blue-200 pl-4 sm:pl-6 pb-4 sm:pb-6 last:pb-0"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
@@ -288,12 +274,16 @@ const HakCiptaPage = () => {
                       <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mb-3">
                         {step.description}
                       </p>
-                      {step.hasDownload && (
-                        <div className="flex items-center gap-4">
-                          <button className="text-blue-600 hover:text-blue-800 underline text-xs sm:text-sm">
-                            {step.downloadText}
-                          </button>
-                        </div>
+                      {step.guideLink && (
+                        <a
+                          href={step.guideLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-2 text-blue-600 hover:text-blue-800 underline text-xs sm:text-sm font-medium"
+                        >
+                          {step.guideText}
+                          <ExternalLink className="h-3 w-3" />
+                        </a>
                       )}
                       {step.hasPdfViewer && (
                         <div className="mt-4">
@@ -314,6 +304,88 @@ const HakCiptaPage = () => {
                 </div>
               ))}
             </div>
+
+            {/* Helper Documents Section */}
+            <div className="mt-6 sm:mt-8 p-3 sm:p-4 bg-gradient-to-r from-blue-50/80 to-indigo-50/50 rounded-lg sm:rounded-xl border border-blue-200/50">
+              <h4 className="font-semibold text-blue-800 mb-3 flex items-center gap-2 text-sm sm:text-base">
+                <Download className="h-4 w-4" />
+                Dokumen Pendukung
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="text-xs sm:text-sm text-blue-700">
+                  <p className="font-medium mb-1">
+                    📄 Surat Pernyataan Hak Cipta:
+                  </p>
+                  <div className="pl-3 space-y-1">
+                    <div>
+                      <a
+                        href="https://docs.google.com/document/d/1ITJ1x1-GkMzKBir93K8sGEw1ZIiN1exF/edit?usp=sharing&ouid=113467600800970467072&rtpof=true&sd=true"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:text-blue-800 underline flex items-center gap-1"
+                      >
+                        Template <ExternalLink className="h-3 w-3" />
+                      </a>
+                    </div>
+                    <div>
+                      <a
+                        href="https://drive.google.com/file/d/1E6Rkh9Sfb-tS27a9WktLcboIi4ZEPcYh/view?usp=sharing"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-green-600 hover:text-green-800 underline flex items-center gap-1"
+                      >
+                        Contoh <ExternalLink className="h-3 w-3" />
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="text-xs sm:text-sm text-blue-700 pt-2 md:pt-0 md:border-l border-blue-200/50 md:pl-4">
+                  <p className="font-medium mb-1">📄 Surat Pengalihan Hak:</p>
+                  <div className="pl-3 space-y-1">
+                    <div>
+                      <a
+                        href="https://docs.google.com/document/d/1WrA-AbbXnSJoGHTXwkzZoFf4NzSCERue/edit?usp=sharing&ouid=113467600800970467072&rtpof=true&sd=true"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:text-blue-800 underline flex items-center gap-1"
+                      >
+                        Template <ExternalLink className="h-3 w-3" />
+                      </a>
+                    </div>
+                    <div>
+                      <a
+                        href="https://drive.google.com/file/d/14W_7HJNnXe2q44AQG1_jouAW8Yn_jcrm/view?usp=sharing"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-green-600 hover:text-green-800 underline flex items-center gap-1"
+                      >
+                        Contoh <ExternalLink className="h-3 w-3" />
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {/* --- NEW CONTENT ADDED HERE --- */}
+              <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+                <div className="flex items-start gap-3">
+                  <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <h5 className="font-semibold text-green-900">
+                      Tanda Tangan Rektor
+                    </h5>
+                    <p className="text-xs text-green-800 mt-1 leading-relaxed">
+                      Untuk mendapatkan tanda tangan Rektor, silakan kirimkan
+                      berkas fisik (hardfile) Surat Pengalihan Hak ke{" "}
+                      <strong>Sekretariat Sentra HKI UCH</strong> di Kampus 1
+                      UTY (Lokasi: Depan Ruang Kelas E02).
+                    </p>
+                  </div>
+                </div>
+              </div>
+              {/* --- END OF NEW CONTENT --- */}
+            </div>
+
             <div className="mt-6 sm:mt-8 p-3 sm:p-4 bg-amber-50 border border-amber-200 rounded-lg">
               <div className="flex items-start gap-2 sm:gap-3">
                 <AlertCircle className="h-4 w-4 sm:h-5 sm:w-5 text-amber-600 mt-0.5 flex-shrink-0" />
@@ -321,12 +393,9 @@ const HakCiptaPage = () => {
                   <p className="text-xs sm:text-sm text-amber-800">
                     <strong>Penting:</strong> Pastikan data pada formulir sama
                     persis dengan data pada surat pernyataan dan pengalihan.
-                    Kesalahan data akan berpengaruh pada sertifikat. Kirim semua
-                    berkas administrasi ke alamat email
-                    <strong> hki@uty.ac.id</strong> dengan subjek email "
-                    <strong>Hak Cipta - Nama Luaran</strong>". Hubungi{" "}
-                    <strong>081572421910</strong> jika belum mendapat balasan
-                    email dalam waktu 2×24 jam.
+                    Kesalahan data akan berpengaruh pada sertifikat. Hubungi{" "}
+                    <strong>sentrahki@uty.ac.id</strong> atau{" "}
+                    <strong>+62 882-3864-4750</strong> untuk bantuan.
                   </p>
                 </div>
               </div>
@@ -335,61 +404,94 @@ const HakCiptaPage = () => {
 
           {/* Section C: Biaya Pencatatan */}
           <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-8 mb-4 sm:mb-8">
-            {/* [RESPONSIVE FIX] Bagian Judul Seksi */}
             <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
               <div className="w-7 h-7 sm:w-8 sm:h-8 bg-blue-800 text-white rounded-lg flex items-center justify-center flex-shrink-0 font-bold text-base">
                 C
               </div>
               <h3 className="text-base sm:text-xl font-bold text-slate-900">
-                BIAYA PENCATATAN
+                BIAYA & PEMBAYARAN
               </h3>
             </div>
-            <p className="text-xs sm:text-sm text-slate-600 mb-4 sm:mb-6 leading-relaxed">
-              Pelayanan bagi civitas akademika Universitas Ahmad Dahlan merupakan
-              cukup tajam untuk kalangan dosen dan mahasiswa. Permohonan tersebut
-              atas pelibagai kepentingan. Oleh karena itu, Sentra HKI perlu
-              membuat peraturan yang dapat dipahami bersama.
-            </p>
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse border border-slate-300 text-xs sm:text-sm">
-                <thead>
-                  <tr className="bg-slate-100">
-                    <th className="border border-slate-300 px-2 sm:px-4 py-2 sm:py-3 text-left font-semibold text-slate-900 text-xs sm:text-sm">
-                      KATEGORI
-                    </th>
-                    <th className="border border-slate-300 px-2 sm:px-4 py-2 sm:py-3 text-left font-semibold text-slate-900 text-xs sm:text-sm">
-                      NON SOFTWARE
-                    </th>
-                    <th className="border border-slate-300 px-2 sm:px-4 py-2 sm:py-3 text-left font-semibold text-slate-900 text-xs sm:text-sm">
-                      SOFTWARE
-                    </th>
-                    <th className="border border-slate-300 px-2 sm:px-4 py-2 sm:py-3 text-left font-semibold text-slate-900 text-xs sm:text-sm">
-                      SATUAN
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {feeStructure.map((fee, index) => (
-                    <tr
-                      key={index}
-                      className={index % 2 === 0 ? "bg-white" : "bg-slate-50"}
-                    >
-                      <td className="border border-slate-300 px-2 sm:px-4 py-2 sm:py-3 font-medium text-slate-900 text-xs sm:text-sm">
-                        {fee.category}
-                      </td>
-                      <td className="border border-slate-300 px-2 sm:px-4 py-2 sm:py-3 text-slate-700 text-xs sm:text-sm">
-                        {fee.nonSoftware}
-                      </td>
-                      <td className="border border-slate-300 px-2 sm:px-4 py-2 sm:py-3 text-slate-700 text-xs sm:text-sm">
-                        {fee.software}
-                      </td>
-                      <td className="border border-slate-300 px-2 sm:px-4 py-2 sm:py-3 text-slate-700 text-xs sm:text-sm">
-                        {fee.unit}
-                      </td>
+
+            <div className="text-xs sm:text-sm text-slate-600 mb-4 sm:mb-6 leading-relaxed grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <p>
+                  Untuk mewujudkan inovasi Anda menjadi aset yang terlindungi,
+                  Sentra HKI UTY menyediakan skema biaya yang terjangkau.
+                  Silakan cermati rincian biaya pada tabel di samping sesuai
+                  kategori Anda.
+                </p>
+                <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                  <p className="font-semibold text-blue-900 mb-2">
+                    Informasi Pembayaran
+                  </p>
+                  <p className="text-blue-800">
+                    Setelah melengkapi berkas, silakan lakukan pembayaran ke
+                    rekening berikut:
+                  </p>
+                  <div className="mt-2 space-y-1 text-slate-800 font-mono">
+                    <p>
+                      <span className="font-sans font-medium text-slate-600">
+                        Bank:
+                      </span>{" "}
+                      BANK MANDIRI
+                    </p>
+                    <p>
+                      <span className="font-sans font-medium text-slate-600">
+                        No. Rek:
+                      </span>{" "}
+                      1234-5678-9012-3456
+                    </p>
+                    <p>
+                      <span className="font-sans font-medium text-slate-600">
+                        Atas Nama:
+                      </span>{" "}
+                      Yayasan Universitas Teknologi Yogyakarta
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse border border-slate-300 text-xs sm:text-sm">
+                  <thead>
+                    <tr className="bg-slate-100">
+                      <th className="border border-slate-300 px-2 sm:px-4 py-2 sm:py-3 text-left font-semibold text-slate-900">
+                        KATEGORI
+                      </th>
+                      <th className="border border-slate-300 px-2 sm:px-4 py-2 sm:py-3 text-left font-semibold text-slate-900">
+                        NON-SOFTWARE
+                      </th>
+                      <th className="border border-slate-300 px-2 sm:px-4 py-2 sm:py-3 text-left font-semibold text-slate-900">
+                        SOFTWARE
+                      </th>
+                      <th className="border border-slate-300 px-2 sm:px-4 py-2 sm:py-3 text-left font-semibold text-slate-900">
+                        SATUAN
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {feeStructure.map((fee, index) => (
+                      <tr
+                        key={index}
+                        className={index % 2 === 0 ? "bg-white" : "bg-slate-50"}
+                      >
+                        <td className="border border-slate-300 px-2 sm:px-4 py-2 sm:py-3 font-medium text-slate-900">
+                          {fee.category}
+                        </td>
+                        <td className="border border-slate-300 px-2 sm:px-4 py-2 sm:py-3 text-slate-700">
+                          {fee.nonSoftware}
+                        </td>
+                        <td className="border border-slate-300 px-2 sm:px-4 py-2 sm:py-3 text-slate-700">
+                          {fee.software}
+                        </td>
+                        <td className="border border-slate-300 px-2 sm:px-4 py-2 sm:py-3 text-slate-700">
+                          {fee.unit}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>

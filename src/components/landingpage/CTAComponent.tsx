@@ -5,6 +5,10 @@ type HeaderProps = {
 };
 
 export default function CTASection({ onRegister }: HeaderProps) {
+  // Nomor WhatsApp telah diperbarui sesuai permintaan
+  const whatsAppNumber = "6288238644750"; 
+  const whatsAppLink = `https://wa.me/${whatsAppNumber}`;
+
   return (
     <section className="w-full py-16 md:py-24 bg-gradient-to-r from-blue-900 via-blue-800 to-slate-800">
       <div className="container px-4 md:px-6 mx-auto text-center">
@@ -22,9 +26,14 @@ export default function CTASection({ onRegister }: HeaderProps) {
             >
               Mulai Pendaftaran
             </button>
-            <button className="border-2 border-white text-white hover:bg-white hover:text-blue-900 px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-200">
-              Hubungi Creative Hub
-            </button>
+            <a 
+              href={whatsAppLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block border-2 border-white text-white hover:bg-white hover:text-blue-900 px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-200"
+            >
+              Hubungi via WhatsApp
+            </a>
           </div>
         </div>
       </div>

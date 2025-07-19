@@ -31,6 +31,8 @@ import {
   Award,
   Users,
   Target,
+  Download,
+  ExternalLink,
 } from "lucide-react";
 import type { StatusPendaftaran } from "@/lib/types";
 
@@ -385,6 +387,67 @@ export default async function DashboardPage() {
                   Pastikan dokumen lengkap dan sesuai format untuk mempercepat
                   proses review HKI Anda.
                 </p>
+              </div>
+
+              {/* Helper Documents */}
+              <div className="p-3 sm:p-4 bg-gradient-to-r from-blue-50/80 to-indigo-50/50 rounded-lg sm:rounded-xl border border-blue-200/50">
+                <h4 className="font-semibold text-blue-800 mb-3 flex items-center gap-2 text-sm sm:text-base">
+                  <Download className="h-3 w-3 sm:h-4 sm:w-4" />
+                  Dokumen Pembantu
+                </h4>
+                <div className="space-y-2">
+                  <div className="text-xs sm:text-sm text-blue-700">
+                    <p className="font-medium mb-1">📄 Surat Pernyataan Hak Cipta:</p>
+                    <div className="pl-3 space-y-1">
+                      <div>
+                        <a 
+                          href="https://docs.google.com/document/d/1ITJ1x1-GkMzKBir93K8sGEw1ZIiN1exF/edit?usp=sharing&ouid=113467600800970467072&rtpof=true&sd=true"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 hover:text-blue-800 underline flex items-center gap-1"
+                        >
+                          Template <ExternalLink className="h-3 w-3" />
+                        </a>
+                      </div>
+                      <div>
+                        <a 
+                          href="https://drive.google.com/file/d/1E6Rkh9Sfb-tS27a9WktLcboIi4ZEPcYh/view?usp=sharing"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-green-600 hover:text-green-800 underline flex items-center gap-1"
+                        >
+                          Contoh <ExternalLink className="h-3 w-3" />
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="text-xs sm:text-sm text-blue-700 pt-2 border-t border-blue-200/50">
+                    <p className="font-medium mb-1">📄 Surat Pengalihan Hak:</p>
+                    <div className="pl-3 space-y-1">
+                      <div>
+                        <a 
+                          href="https://docs.google.com/document/d/1WrA-AbbXnSJoGHTXwkzZoFf4NzSCERue/edit?usp=sharing&ouid=113467600800970467072&rtpof=true&sd=true"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 hover:text-blue-800 underline flex items-center gap-1"
+                        >
+                          Template <ExternalLink className="h-3 w-3" />
+                        </a>
+                      </div>
+                      <div>
+                        <a 
+                          href="https://drive.google.com/file/d/14W_7HJNnXe2q44AQG1_jouAW8Yn_jcrm/view?usp=sharing"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-green-600 hover:text-green-800 underline flex items-center gap-1"
+                        >
+                          Contoh <ExternalLink className="h-3 w-3" />
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>

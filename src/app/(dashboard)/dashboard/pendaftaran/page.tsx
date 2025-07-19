@@ -38,6 +38,8 @@ import {
   Search,
   Filter,
   X,
+  Download,
+  ExternalLink,
 } from "lucide-react";
 import type { StatusPendaftaran, Pendaftaran } from "@/lib/types";
 import { PendaftaranActions } from "@/components/features/pendaftaran/PendaftaranActions";
@@ -281,6 +283,85 @@ export default function PendaftaranListPage() {
                 {pendaftaran.length} pendaftaran
               </div>
             )}
+          </CardContent>
+        </Card>
+
+        {/* Helper Documents Section */}
+        <Card className="border-green-200/50 bg-gradient-to-br from-green-50/80 to-white backdrop-blur-sm shadow-lg">
+          <CardHeader className="pb-4">
+            <CardTitle className="text-lg font-bold text-green-800 flex items-center gap-2">
+              <Download className="h-5 w-5" />
+              Dokumen Pembantu
+            </CardTitle>
+            <CardDescription className="text-green-700">
+              Template dan contoh dokumen yang diperlukan untuk Pendaftaran
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Surat Pernyataan */}
+              <div className="p-4 bg-gradient-to-r from-blue-50/80 to-indigo-50/50 rounded-lg border border-blue-200/50">
+                <h4 className="font-semibold text-blue-800 mb-3 flex items-center gap-2">
+                  <FileText className="h-4 w-4" />
+                  Surat Pernyataan Hak Cipta
+                </h4>
+                <div className="space-y-2">
+                  <div>
+                    <a 
+                      href="https://docs.google.com/document/d/1ITJ1x1-GkMzKBir93K8sGEw1ZIiN1exF/edit?usp=sharing&ouid=113467600800970467072&rtpof=true&sd=true"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:text-blue-800 underline flex items-center gap-1 text-sm"
+                    >
+                      📄 Template <ExternalLink className="h-3 w-3" />
+                    </a>
+                  </div>
+                  <div>
+                    <a 
+                      href="https://drive.google.com/file/d/1E6Rkh9Sfb-tS27a9WktLcboIi4ZEPcYh/view?usp=sharing"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-green-600 hover:text-green-800 underline flex items-center gap-1 text-sm"
+                    >
+                      📋 Contoh Pengisian <ExternalLink className="h-3 w-3" />
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              {/* Surat Pengalihan */}
+              <div className="p-4 bg-gradient-to-r from-yellow-50/80 to-orange-50/50 rounded-lg border border-yellow-200/50">
+                <h4 className="font-semibold text-yellow-800 mb-3 flex items-center gap-2">
+                  <FileText className="h-4 w-4" />
+                  Surat Pengalihan Hak
+                </h4>
+                <div className="space-y-2">
+                  <div>
+                    <a 
+                      href="https://docs.google.com/document/d/1WrA-AbbXnSJoGHTXwkzZoFf4NzSCERue/edit?usp=sharing&ouid=113467600800970467072&rtpof=true&sd=true"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:text-blue-800 underline flex items-center gap-1 text-sm"
+                    >
+                      📄 Template <ExternalLink className="h-3 w-3" />
+                    </a>
+                  </div>
+                  <div>
+                    <a 
+                      href="https://drive.google.com/file/d/14W_7HJNnXe2q44AQG1_jouAW8Yn_jcrm/view?usp=sharing"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-green-600 hover:text-green-800 underline flex items-center gap-1 text-sm"
+                    >
+                      📋 Contoh Pengisian <ExternalLink className="h-3 w-3" />
+                    </a>
+                  </div>
+                </div>
+                <p className="text-xs text-yellow-700 mt-2 italic">
+                  * Wajib untuk Civitas UTY
+                </p>
+              </div>
+            </div>
           </CardContent>
         </Card>
 
