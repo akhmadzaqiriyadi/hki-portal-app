@@ -3,7 +3,14 @@
 import React from "react";
 import { useFormContext } from "react-hook-form";
 import { format } from "date-fns";
-import { CalendarIcon, FileText, DollarSign, MapPin, Calendar as CalendarLucide, Type } from "lucide-react";
+import {
+  CalendarIcon,
+  FileText,
+  DollarSign,
+  MapPin,
+  Calendar as CalendarLucide,
+  Type,
+} from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { FormValues } from "@/lib/pendaftaran/schema";
@@ -47,7 +54,7 @@ export function Step1InformasiKarya() {
     <Card className="border-blue-200/50 bg-gradient-to-br from-white to-blue-50/30 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 relative overflow-hidden">
       {/* Background decoration */}
       <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-100/20 to-blue-200/10 rounded-full -translate-y-16 translate-x-16 pointer-events-none"></div>
-      
+
       <CardHeader className="pb-3 sm:pb-4 relative">
         <CardTitle className="flex items-center gap-2 sm:gap-3">
           <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-blue-900 to-blue-800 rounded-xl flex items-center justify-center shadow-lg">
@@ -71,7 +78,9 @@ export function Step1InformasiKarya() {
             <div className="w-6 h-6 sm:w-7 sm:h-7 bg-gradient-to-br from-blue-600 to-blue-700 rounded-lg flex items-center justify-center shadow-md">
               <Type className="h-3 w-3 sm:h-4 sm:w-4 text-white" />
             </div>
-            <h4 className="text-sm sm:text-base md:text-lg font-semibold text-slate-800">Informasi Dasar Karya</h4>
+            <h4 className="text-sm sm:text-base md:text-lg font-semibold text-slate-800">
+              Informasi Dasar Karya
+            </h4>
           </div>
 
           <FormField
@@ -79,7 +88,9 @@ export function Step1InformasiKarya() {
             name="judul"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-xs sm:text-sm font-semibold text-slate-700">Judul Karya *</FormLabel>
+                <FormLabel className="text-xs sm:text-sm font-semibold text-slate-700">
+                  Judul Karya *
+                </FormLabel>
                 <FormControl>
                   <Input
                     placeholder="Contoh: Aplikasi Portal HKI"
@@ -97,7 +108,9 @@ export function Step1InformasiKarya() {
             name="produk_hasil"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-xs sm:text-sm font-semibold text-slate-700">Produk Hasil *</FormLabel>
+                <FormLabel className="text-xs sm:text-sm font-semibold text-slate-700">
+                  Produk Hasil *
+                </FormLabel>
                 <FormControl>
                   <Input
                     placeholder="Contoh: Perangkat Lunak, Buku, Lagu"
@@ -116,7 +129,9 @@ export function Step1InformasiKarya() {
               name="jenis_karya"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-xs sm:text-sm font-semibold text-slate-700">Jenis Karya *</FormLabel>
+                  <FormLabel className="text-xs sm:text-sm font-semibold text-slate-700">
+                    Jenis Karya *
+                  </FormLabel>
                   <Select
                     onValueChange={(value) => {
                       field.onChange(value);
@@ -154,13 +169,17 @@ export function Step1InformasiKarya() {
                   <Select
                     onValueChange={field.onChange}
                     value={field.value}
-                    disabled={!selectedCategoryData || selectedCategoryData.subCategories.length === 0}
+                    disabled={
+                      !selectedCategoryData ||
+                      selectedCategoryData.subCategories.length === 0
+                    }
                   >
                     <FormControl>
                       <SelectTrigger className="bg-white/80 border-blue-200/50 focus:border-blue-400 focus:ring-blue-200/50 transition-all duration-300 hover:bg-white text-sm sm:text-base">
                         <SelectValue
                           placeholder={
-                            selectedCategoryData && selectedCategoryData.subCategories.length > 0
+                            selectedCategoryData &&
+                            selectedCategoryData.subCategories.length > 0
                               ? "Pilih sub-jenis..."
                               : "Pilih jenis karya dahulu"
                           }
@@ -190,7 +209,9 @@ export function Step1InformasiKarya() {
             <div className="w-6 h-6 sm:w-7 sm:h-7 bg-gradient-to-br from-green-600 to-green-700 rounded-lg flex items-center justify-center shadow-md">
               <DollarSign className="h-3 w-3 sm:h-4 sm:w-4 text-white" />
             </div>
-            <h4 className="text-sm sm:text-base md:text-lg font-semibold text-slate-800">Nilai Aset</h4>
+            <h4 className="text-sm sm:text-base md:text-lg font-semibold text-slate-800">
+              Nilai Aset
+            </h4>
           </div>
 
           <FormField
@@ -202,11 +223,13 @@ export function Step1InformasiKarya() {
                   Nilai Aset Karya (Rp) *
                 </FormLabel>
                 <FormControl>
-                  <Input 
-                    type="number" 
-                    placeholder="5000000" 
+                  <Input
+                    type="number"
+                    placeholder="5000000"
                     className="bg-white/80 border-blue-200/50 focus:border-blue-400 focus:ring-blue-200/50 transition-all duration-300 hover:bg-white text-sm sm:text-base"
-                    {...field} 
+                    // 💡 Modifikasi di baris ini
+                    {...field}
+                    value={field.value ?? ""} // Ganti dari {...field} saja
                   />
                 </FormControl>
                 <FormMessage />
@@ -221,7 +244,9 @@ export function Step1InformasiKarya() {
             <div className="w-6 h-6 sm:w-7 sm:h-7 bg-gradient-to-br from-purple-600 to-purple-700 rounded-lg flex items-center justify-center shadow-md">
               <MapPin className="h-3 w-3 sm:h-4 sm:w-4 text-white" />
             </div>
-            <h4 className="text-sm sm:text-base md:text-lg font-semibold text-slate-800">Informasi Publikasi</h4>
+            <h4 className="text-sm sm:text-base md:text-lg font-semibold text-slate-800">
+              Informasi Publikasi
+            </h4>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
@@ -234,10 +259,10 @@ export function Step1InformasiKarya() {
                     Kota Pertama Diumumkan *
                   </FormLabel>
                   <FormControl>
-                    <Input 
-                      placeholder="Yogyakarta" 
+                    <Input
+                      placeholder="Yogyakarta"
                       className="bg-white/80 border-blue-200/50 focus:border-blue-400 focus:ring-blue-200/50 transition-all duration-300 hover:bg-white text-sm sm:text-base"
-                      {...field} 
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
@@ -297,7 +322,9 @@ export function Step1InformasiKarya() {
             <div className="w-6 h-6 sm:w-7 sm:h-7 bg-gradient-to-br from-orange-600 to-orange-700 rounded-lg flex items-center justify-center shadow-md">
               <FileText className="h-3 w-3 sm:h-4 sm:w-4 text-white" />
             </div>
-            <h4 className="text-sm sm:text-base md:text-lg font-semibold text-slate-800">Deskripsi Karya</h4>
+            <h4 className="text-sm sm:text-base md:text-lg font-semibold text-slate-800">
+              Deskripsi Karya
+            </h4>
           </div>
 
           <FormField
@@ -316,7 +343,8 @@ export function Step1InformasiKarya() {
                   />
                 </FormControl>
                 <FormDescription className="text-xs sm:text-sm text-slate-600">
-                  Minimal 20 karakter. Saat ini: {deskripsiValue?.length || 0} karakter
+                  Minimal 20 karakter. Saat ini: {deskripsiValue?.length || 0}{" "}
+                  karakter
                 </FormDescription>
                 <FormMessage />
               </FormItem>

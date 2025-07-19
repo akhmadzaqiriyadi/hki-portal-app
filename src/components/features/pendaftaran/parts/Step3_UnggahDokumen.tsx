@@ -1,5 +1,3 @@
-// src/components/features/pendaftaran/parts/Step3_UnggahDokumen.tsx
-
 "use client";
 
 import React from "react";
@@ -9,7 +7,7 @@ import {
   FileText,
   CreditCard,
   AlertCircle,
-  CheckCircle, // <-- Icon Ditambahkan
+  CheckCircle,
 } from "lucide-react";
 
 import { usePendaftaranFee } from "@/components/hooks/usePendaftaranFee";
@@ -34,7 +32,6 @@ import {
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -42,18 +39,16 @@ import {
 export function Step3UnggahDokumen() {
   const { control, watch } = useFormContext<FormValues>();
 
-  // Memantau nilai 'jenis_pemilik' dan 'jenis_karya' untuk perhitungan biaya
   const jenisPemilik = watch("jenis_pemilik");
   const jenisKarya = watch("jenis_karya");
 
-  // Menggunakan custom hook untuk mendapatkan biaya pendaftaran secara reaktif
   const biayaPendaftaran = usePendaftaranFee(jenisPemilik, jenisKarya);
 
   return (
     <div className="w-full max-w-full space-y-6">
-      {/* Header Card */}
+      {/* Cards untuk Header, Status Pemilik, dan Informasi Pembayaran */}
+      {/* ... (kode ini tidak perlu diubah dan sudah benar) ... */}
       <Card className="border-blue-200/50 bg-gradient-to-br from-white to-blue-50/30 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 relative overflow-hidden">
-        {/* Background decoration */}
         <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-100/20 to-blue-200/10 rounded-full -translate-y-16 translate-x-16 pointer-events-none"></div>
 
         <CardHeader className="pb-3 sm:pb-4 relative">
@@ -88,11 +83,9 @@ export function Step3UnggahDokumen() {
           </div>
         </CardContent>
       </Card>
-
-      {/* Status Pemilik Card */}
+      
       <Card className="border-slate-200/50 bg-gradient-to-br from-white to-slate-50/30 backdrop-blur-sm shadow-md hover:shadow-lg transition-all duration-300 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-slate-100/20 to-slate-200/10 rounded-full -translate-y-12 translate-x-12 pointer-events-none"></div>
-
         <CardHeader className="pb-4 relative">
           <CardTitle className="text-lg font-semibold text-slate-800 flex items-center gap-2">
             <div className="w-6 h-6 bg-gradient-to-br from-slate-600 to-slate-700 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -131,10 +124,8 @@ export function Step3UnggahDokumen() {
         </CardContent>
       </Card>
 
-      {/* Payment Information Card */}
       <Card className="border-blue-300/50 bg-gradient-to-br from-blue-50/50 to-blue-100/30 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-200/20 to-blue-300/10 rounded-full -translate-y-16 translate-x-16 pointer-events-none"></div>
-
         <CardHeader className="pb-4 relative">
           <CardTitle className="flex items-start gap-3 text-blue-900">
             <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl flex items-center justify-center shadow-lg flex-shrink-0">
@@ -195,6 +186,7 @@ export function Step3UnggahDokumen() {
         </CardHeader>
         <CardContent className="space-y-6 relative">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Bukti Transfer */}
             <div className="w-full">
               <FormField
                 control={control}
@@ -214,6 +206,7 @@ export function Step3UnggahDokumen() {
               />
             </div>
 
+            {/* Scan KTP */}
             <div className="w-full">
               <FormField
                 control={control}
@@ -236,6 +229,7 @@ export function Step3UnggahDokumen() {
               />
             </div>
 
+            {/* Lampiran Karya */}
             <div className="w-full">
               <FormField
                 control={control}
@@ -255,6 +249,7 @@ export function Step3UnggahDokumen() {
               />
             </div>
 
+            {/* Surat Pernyataan */}
             <div className="w-full">
               <FormField
                 control={control}
@@ -269,6 +264,7 @@ export function Step3UnggahDokumen() {
                       <FileUpload field={field} />
                     </FormControl>
                     <FormDescription className="text-xs text-slate-600 mt-2">
+                      {/* FIX: Menggunakan <div> sebagai wrapper, bukan <p> */}
                       <div className="flex flex-col gap-1">
                         <span>📄 Template:</span>
                         <a
@@ -297,7 +293,7 @@ export function Step3UnggahDokumen() {
             </div>
           </div>
 
-          {/* Conditional Field untuk BUKAN Umum */}
+          {/* Conditional Field: Surat Pengalihan Hak */}
           {jenisPemilik !== "Umum" && (
             <Card className="border-yellow-300/50 bg-gradient-to-br from-yellow-50/50 to-yellow-100/30 backdrop-blur-sm shadow-md hover:shadow-lg transition-all duration-300 relative overflow-hidden">
               <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-yellow-200/20 to-yellow-300/10 rounded-full -translate-y-12 translate-x-12 pointer-events-none"></div>
@@ -326,6 +322,7 @@ export function Step3UnggahDokumen() {
                           <FileUpload field={field} />
                         </FormControl>
                         <FormDescription className="text-xs text-yellow-700 mt-2">
+                          {/* FIX: Menggunakan <div> sebagai wrapper */}
                           <div className="flex flex-col gap-1">
                             <span>📄 Template:</span>
                             <a
@@ -346,8 +343,7 @@ export function Step3UnggahDokumen() {
                               Contoh Pengisian Surat Pengalihan
                             </a>
                           </div>
-
-                          {/* --- KONTEN BARU DITAMBAHKAN DI SINI --- */}
+                          
                           <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
                             <div className="flex items-start gap-2">
                               <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
@@ -368,8 +364,6 @@ export function Step3UnggahDokumen() {
                               </div>
                             </div>
                           </div>
-                          {/* --- AKHIR KONTEN BARU --- */}
-                          
                         </FormDescription>
                         <FormMessage />
                       </FormItem>

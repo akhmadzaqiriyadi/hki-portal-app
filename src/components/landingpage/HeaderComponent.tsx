@@ -77,9 +77,9 @@ export default function Header({ onLogin, onRegister }: HeaderProps) {
           )}
         </div>
 
-        <a href="#fitur" className="text-sm font-medium text-slate-600 hover:text-blue-800 transition-colors">
+        <Link href="/#fitur" className="text-sm font-medium text-slate-600 hover:text-blue-800 transition-colors">
           Fitur
-        </a>
+        </Link>
         <button onClick={onLogin} className="text-sm font-medium text-slate-600 hover:text-blue-800 transition-colors">
           Masuk
         </button>
@@ -121,7 +121,9 @@ export default function Header({ onLogin, onRegister }: HeaderProps) {
               )}
             </div>
             
-            <a href="#fitur" onClick={closeMobileMenu} className="text-sm font-medium text-slate-600 hover:text-blue-800">Fitur</a>
+            <Link href="/#fitur" onClick={closeMobileMenu} className="text-sm font-medium text-slate-600 hover:text-blue-800">
+              Fitur
+            </Link>
             <button onClick={() => { onLogin(); closeMobileMenu(); }} className="text-sm font-medium text-slate-600 hover:text-blue-800 text-left">Masuk</button>
             <button onClick={() => { onRegister(); closeMobileMenu(); }} className="bg-gradient-to-r from-blue-900 to-blue-800 text-white px-4 py-2 rounded-xl font-medium w-full">
               Daftar Sekarang
