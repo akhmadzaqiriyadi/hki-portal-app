@@ -427,26 +427,26 @@ const HakCiptaPage = () => {
                   </p>
                   <p className="text-blue-800">
                     Setelah melengkapi berkas, silakan lakukan pembayaran ke
-                    rekening berikut:
+                     Nomor berikut:
                   </p>
                   <div className="mt-2 space-y-1 text-slate-800 font-mono">
                     <p>
                       <span className="font-sans font-medium text-slate-600">
-                        Bank:
+                        E-Wallet:
                       </span>{" "}
-                      BANK MANDIRI
+                      DANA
                     </p>
                     <p>
                       <span className="font-sans font-medium text-slate-600">
-                        No. Rek:
+                        No:
                       </span>{" "}
-                      1234-5678-9012-3456
+                      082336623249
                     </p>
                     <p>
                       <span className="font-sans font-medium text-slate-600">
-                        Atas Nama:
+                      Atas Nama:
                       </span>{" "}
-                      Yayasan Universitas Teknologi Yogyakarta
+                      SINDHI KHARISMA
                     </p>
                   </div>
                 </div>

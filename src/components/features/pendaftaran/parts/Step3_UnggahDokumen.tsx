@@ -134,7 +134,7 @@ export function Step3UnggahDokumen() {
             <div className="min-w-0 flex-1">
               <h3 className="text-lg font-bold">Informasi Pembayaran</h3>
               <p className="text-sm text-blue-700 font-medium">
-                Detail biaya dan rekening tujuan
+                Detail biaya dan Nomor tujuan
               </p>
             </div>
           </CardTitle>
@@ -149,16 +149,16 @@ export function Step3UnggahDokumen() {
             </p>
             <div className="pt-3 border-t border-blue-200/50">
               <p className="text-blue-800 font-medium mb-2">
-                Ke rekening tujuan:
+                Ke nomor tujuan:
               </p>
               <div className="bg-blue-900/5 rounded-lg p-3 border border-blue-200/30">
                 <p className="font-bold text-blue-900">
-                  BANK MANDIRI: 1234-5678-9012-3456
+                  DANA: 082336623249
                 </p>
                 <p className="text-blue-800 font-medium">
                   Atas Nama:{" "}
                   <span className="font-bold">
-                    Yayasan Universitas Teknologi Yogyakarta
+                    SINDHI KHARISMA
                   </span>
                 </p>
               </div>

@@ -1,6 +1,7 @@
 import React from 'react';
-import { ArrowRight, CheckCircle, GraduationCap } from "lucide-react";
+import { ArrowRight, CheckCircle, GraduationCap} from "lucide-react";
 import Image from 'next/image';
+import Link from 'next/link';
 
 type HeaderProps = {
   onRegister: () => void;
@@ -47,9 +48,11 @@ export default function HeroSection({ onRegister }: HeaderProps) {
                 Mulai Pendaftaran HKI
                 <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </button>
-              <button className="border-2 border-blue-800 hover:border-blue-700 text-blue-800 hover:text-blue-700 px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-200 hover:bg-blue-50">
-                Panduan Lengkap
-              </button>
+              <Link href="https://drive.google.com/file/d/1ki9xGjUHERi6qfV3qSKHFHFPATzIepvD/view?usp=sharing" className="flex items-center justify-center">
+                <button className="border-2 border-blue-800 hover:border-blue-700 text-blue-800 hover:text-blue-700 px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-200 hover:bg-blue-50">
+                  Panduan Lengkap
+                </button>
+              </Link>
             </div>
 
             {/* Stats */}
